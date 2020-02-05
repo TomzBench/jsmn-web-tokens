@@ -9,6 +9,7 @@
 #define UNSAFE_SUB "jsmn_web_token_sub"
 #define UNSAFE_IAT 1580601600
 #define UNSAFE_EXP 1580602200
+#define UNSAFE_SECRET "unsafe_secret"
 
 #define EXPECT_HEADER "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 #define EXPECT_PAYLOAD                                                         \
@@ -46,6 +47,10 @@ test_jsmn_web_token_init_ok(void** context_p)
     assert_int_equal(err, 0);
     assert_int_equal(strlen(EXPECT_TOKEN), token.len);
     assert_memory_equal(EXPECT_TOKEN, token.b, token.len);
+
+    err = jsmn_web_token_sign(&token, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
+
+    assert_int_equal(err, 0);
 }
 
 int

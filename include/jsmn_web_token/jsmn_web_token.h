@@ -47,6 +47,11 @@ extern "C"
         const char* claims,
         ...);
 
+    int jsmn_web_token_sign(
+        jsmn_web_token_s* token,
+        const char* secret,
+        uint32_t slen);
+
 #ifdef __cplusplus
 }
 #endif

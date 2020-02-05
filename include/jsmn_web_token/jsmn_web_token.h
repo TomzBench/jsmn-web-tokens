@@ -21,10 +21,9 @@ extern "C"
 
     typedef enum JSMN_WEB_TOKEN_ALG
     {
-        JSMN_WEB_TOKEN_ALG_NONE = 0,
-        JSMN_WEB_TOKEN_ALG_HS256 = 1,
-        JSMN_WEB_TOKEN_ALG_HS384 = 2,
-        JSMN_WEB_TOKEN_ALG_HS512 = 3,
+        JSMN_WEB_TOKEN_ALG_HS256 = 0,
+        JSMN_WEB_TOKEN_ALG_HS384 = 1,
+        JSMN_WEB_TOKEN_ALG_HS512 = 2,
         // JSMN_WEB_TOKEN_ALG_RS256,
         // JSMN_WEB_TOKEN_ALG_RS384,
         // JSMN_WEB_TOKEN_ALG_RS512,
@@ -33,7 +32,7 @@ extern "C"
         // JSMN_WEB_TOKEN_ALG_ES512,
         // JSMN_WEB_TOKEN_ALG_TERM
     } JSMN_WEB_TOKEN_ALG;
-#define JSMN_WEB_TOKEN_ALG_MAX JSMN_WEB_TOKEN_ALG_HS512
+#define JSMN_WEB_TOKEN_ALG_COUNT 3
 
     typedef struct jsmn_web_token_s
     {

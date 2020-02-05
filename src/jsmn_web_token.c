@@ -4,11 +4,11 @@
 static const char*
 alg_str(JSMN_WEB_TOKEN_ALG alg)
 {
-    static const char* algs[JSMN_WEB_TOKEN_ALG_MAX] = { "hs256",
-                                                        "hs384",
-                                                        "hs512" };
+    static const char* algs[JSMN_WEB_TOKEN_ALG_COUNT] = { "HS256",
+                                                          "HS384",
+                                                          "HS512" };
 
-    __jsmn_web_token_assert(alg >= 0 && alg < JSMN_WEB_TOKEN_ALG_MAX);
+    __jsmn_web_token_assert(alg >= 0 && alg < JSMN_WEB_TOKEN_ALG_COUNT);
     return algs[alg];
 }
 
@@ -23,7 +23,12 @@ append_b64(jsmn_web_token_s* token, const char* buffer, uint32_t len)
         &newlen,
         buffer,
         len);
-    if (!err) token->len += newlen;
+    if (!err) {
+        // base64url encoding w/o padding.
+        token->len += newlen;
+        if (token->b[token->len - 1] == '=') token->len--;
+        if (token->b[token->len - 1] == '=') token->len--;
+    }
     return err;
 }
 

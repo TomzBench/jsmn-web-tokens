@@ -45,6 +45,7 @@ test_jsmn_web_token_init_ok(void** context_p)
 
     assert_int_equal(err, 0);
     assert_int_equal(strlen(EXPECT_TOKEN), token.len);
+    assert_memory_equal(EXPECT_TOKEN, token.b, token.len);
 }
 
 int

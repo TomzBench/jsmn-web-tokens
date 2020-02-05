@@ -24,6 +24,7 @@ if(ENABLE_TESTING)
   include(cmake/cmocka.cmake)
   include(cmake/CodeCoverage.cmake)
   add_subdirectory(test/jsmn)
+  add_subdirectory(test/tokens)
 endif()
 
 if(BUILD_EXAMPLES)

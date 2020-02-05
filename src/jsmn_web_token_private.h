@@ -40,12 +40,6 @@ extern "C"
 {
 #endif
 
-    typedef struct jsmn_web_token_s
-    {
-        JSMN_WEB_TOKEN_ALG alg;
-        char json[];
-    } jsmn_web_token_s;
-
 #ifdef __cplusplus
 }
 #endif

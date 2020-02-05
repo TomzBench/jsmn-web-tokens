@@ -1,0 +1,22 @@
+# cmocka
+
+ExternalProject_Add(cmocka-project
+	SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/cmocka
+	INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+	UPDATE_COMMAND ""
+	LIST_SEPARATOR |
+	CMAKE_ARGS 
+		-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+		-DCMAKE_INSTALL_LIBDIR=<INSTALL_DIR>/lib
+		-DUNIT_TESTING:BOOL=OFF
+	)
+
+ExternalProject_Get_Property(cmocka-project INSTALL_DIR)
+set(cmocka_LIBRARY ${INSTALL_DIR}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}cmocka${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(cmocka_INCLUDE_DIR ${INSTALL_DIR}/include)
+FILE(MAKE_DIRECTORY ${INSTALL_DIR}/include)
+
+add_library(cmocka SHARED IMPORTED)
+set_property(TARGET cmocka PROPERTY IMPORTED_LOCATION ${cmocka_LIBRARY})
+set_property(TARGET cmocka PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${cmocka_INCLUDE_DIR})
+add_dependencies(cmocka cmocka-project)

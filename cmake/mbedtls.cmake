@@ -1,9 +1,17 @@
-set(mbedtls_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/mbedtls)
+set(MBEDTLS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/mbedtls)
+set(MBEDTLS_CRYPTO_TEST_FILE ${MBEDTLS_SOURCE_DIR}/crypto/CMakeLists.txt)
+
+# clone git submodule if needed
+add_custom_command(
+  OUTPUT ${MBEDTLS_CRYPTO_TEST_FILE}
+  COMMAND "${GIT_EXECUTABLE}" submodule update --init crypto
+  WORKING_DIRECTORY "${MBEDTLS_SOURCE_DIR}")
+add_custom_target(mbedtls-submodules DEPENDS "${MBEDTLS_CRYPTO_TEST_FILE}")
 
 if(NOT MSVC)
   ### Build Wolfssl ###
   ExternalProject_Add(mbedtls-project
-  	SOURCE_DIR ${mbedtls_SOURCE_DIR}
+  	SOURCE_DIR ${MBEDTLS_SOURCE_DIR}
   	INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
         UPDATE_COMMAND ""
         BUILD_COMMAND ""
@@ -20,6 +28,7 @@ if(NOT MSVC)
             -DUSE_SHARED_MBEDTLS_LIBRARY:BOOL=ON
             -DUSE_STATIC_MBEDTLS_LIBRARY:BOOL=ON
   	EXCLUDE_FROM_ALL true)
+  add_dependencies(mbedtls-project mbedtls-submodules)
   ExternalProject_Get_Property(mbedtls-project INSTALL_DIR)
   set(mbedtls_INCLUDE_DIR ${INSTALL_DIR}/include)
   FILE(MAKE_DIRECTORY ${INSTALL_DIR}/include)

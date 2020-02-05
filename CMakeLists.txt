@@ -1,11 +1,35 @@
 cmake_minimum_required(VERSION 3.11...3.16)
 project(jsmn_web_token)
 
+find_package(Git)
+if(NOT Git_FOUND)
+  message(FATAL_ERROR "Git not found! Git is required to install submodules")
+endif()
+
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 option(BUILD_SHARED "Whether or not to build the shared object"  ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)
 # option(BUILD_EXAMPLES "Whether or not to build the examples" OFF)
+option(WITH_OPENSSL "Link crypto primatives against openssl" OFF)
+option(WITH_GNUTLS "Link crypto primatives against openssl" OFF)
+option(WITH_MBEDTLS "Link crypto primatives against openssl" ON)
+option(WITH_WOLFSSL "Link crypto primatives against openssl" OFF)
+
+if (WITH_OPENSSL)
+  include(cmake/openssl.cmake)
+elseif(WITH_GNU_TLS)
+  include(cmake/gnutls.cmake)
+elseif(WITH_MBEDTLS)
+  include(cmake/mbedtls.cmake)
+  set(CRYPTO_STATIC_LIBS crypto-static tls-static x509-static)
+  set(CRYPTO_SHARED_LIBS crypto-shared tls-shared x509-shared)
+elseif(WITH_WOLFSSL)
+  include(cmake/wolfssl.cmake)
+else()
+  message(FATAL_ERROR "Please select a crypto library")
+endif()
+
 
 if(ENABLE_TESTING)
   set(CMAKE_BUILD_TYPE Debug)

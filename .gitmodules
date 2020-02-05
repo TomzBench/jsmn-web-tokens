@@ -1,3 +1,6 @@
 [submodule "external/cmocka"]
 	path = external/cmocka
 	url = git://git.cryptomilk.org/projects/cmocka.git
+[submodule "external/mbedtls"]
+	path = external/mbedtls
+	url = https://github.com/ARMmbed/mbedtls

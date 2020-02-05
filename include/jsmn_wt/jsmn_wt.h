@@ -9,11 +9,11 @@ extern "C"
 {
 #endif
 
-    typedef struct jsmn_wt_str
+    typedef struct jsmn_wt_value
     {
         const char* p;
         uint32_t len;
-    } jsmn_value;
+    } jsmn_wt_value;
 
 #ifdef __cplusplus
 }

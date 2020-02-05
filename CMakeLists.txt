@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.11...3.16)
-project(jsmn_wt)
+project(jsmn_web_token)
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 

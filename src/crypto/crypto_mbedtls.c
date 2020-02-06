@@ -15,32 +15,6 @@ uri_encode(char* str, uint32_t* len)
     }
     *len = t;
 }
-int
-crypto_base64_encode(
-    char* dst,
-    uint32_t dst_len,
-    uint32_t* out_len,
-    const char* src,
-    uint32_t src_len)
-{
-    int err = mbedtls_base64_encode(
-        (byte*)dst, dst_len, (size_t*)out_len, (byte*)src, src_len);
-    if (!err) uri_encode(dst, out_len);
-    return err;
-}
-
-int
-crypto_base64_dencode(
-    char* dst,
-    uint32_t dst_len,
-    uint32_t* out_len,
-    const char* src,
-    uint32_t src_len)
-{
-    int err = mbedtls_base64_decode(
-        (byte*)dst, dst_len, (size_t*)out_len, (byte*)src, src_len);
-    return err;
-}
 
 static int
 sha256(const char* input, uint32_t ilen, char* output)
@@ -76,6 +50,33 @@ hmac256(
     err = 0;
 ERROR:
     mbedtls_md_free(&ctx);
+    return err;
+}
+
+int
+crypto_base64_encode(
+    char* dst,
+    uint32_t dst_len,
+    uint32_t* out_len,
+    const char* src,
+    uint32_t src_len)
+{
+    int err = mbedtls_base64_encode(
+        (byte*)dst, dst_len, (size_t*)out_len, (byte*)src, src_len);
+    if (!err) uri_encode(dst, out_len);
+    return err;
+}
+
+int
+crypto_base64_dencode(
+    char* dst,
+    uint32_t dst_len,
+    uint32_t* out_len,
+    const char* src,
+    uint32_t src_len)
+{
+    int err = mbedtls_base64_decode(
+        (byte*)dst, dst_len, (size_t*)out_len, (byte*)src, src_len);
     return err;
 }
 

@@ -49,6 +49,10 @@ if(BUILD_SHARED)
   target_include_directories(jsmn_web_token_shared PRIVATE ./)
   target_compile_definitions(jsmn_web_token_shared PRIVATE ${DEFS})
   set_target_properties(jsmn_web_token_shared PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
+  install(TARGETS jsmn_web_token_shared
+          LIBRARY DESTINATION lib
+          ARCHIVE DESTINATION lib
+          PUBLIC_HEADER DESTINATION include/jsmn)
 endif()
 
 if(BUILD_STATIC)
@@ -58,4 +62,8 @@ if(BUILD_STATIC)
   target_include_directories(jsmn_web_token_static PRIVATE ./)
   target_compile_definitions(jsmn_web_token_static PRIVATE ${DEFS})
   set_target_properties(jsmn_web_token_static PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
+  install(TARGETS jsmn_web_token_static
+          LIBRARY DESTINATION lib
+          ARCHIVE DESTINATION lib
+          PUBLIC_HEADER DESTINATION include/jsmn)
 endif()

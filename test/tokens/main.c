@@ -11,6 +11,29 @@
 #define UNSAFE_EXP 1580602200
 #define UNSAFE_SECRET "unsafe_secret"
 
+/*
+ * This token was taken with the following data from https://jwt.io
+ * {
+ *      "alg": "HS256",
+ *      "typ": "JWT",
+ * }
+ * .
+ * {
+ *      "iss": "jsmn_web_token_iss",
+ *      "sub": "jsmn_web_token_sub",
+ *      "iat": 1580601600,
+ *      "exp": 1580602200
+ * }
+ * .
+ * HMACSHA256(
+ *      base64UrlEncode(header) + "." +
+ *      base64UrlEncode(payload),
+ *      unsafe_secret
+ * )
+ *
+ * base64 encode secret (false)
+ */
+
 #define EXPECT_HEADER "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 #define EXPECT_PAYLOAD                                                         \
     "eyJpc3MiOiJqc21uX3dlYl90b2tlbl9pc3MiLCJzdWIiOiJqc21uX3dlYl90b2tlbl9zdWIi" \
@@ -43,10 +66,12 @@ test_jsmn_web_token_init_ok(void** context_p)
         UNSAFE_IAT,
         UNSAFE_EXP);
 
+    // Verify header + payload
     assert_int_equal(err, 0);
     assert_int_equal(strlen(EXPECT_HEADER "." EXPECT_PAYLOAD), token.len);
     assert_memory_equal(EXPECT_HEADER "." EXPECT_PAYLOAD, token.b, token.len);
 
+    // Verify signature
     err = jsmn_web_token_sign(&token, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
     assert_int_equal(err, 0);
     assert_int_equal(strlen(EXPECT_TOKEN), token.len);

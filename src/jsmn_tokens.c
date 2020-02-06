@@ -1,5 +1,5 @@
 #include "crypto/crypto.h"
-#include "jsmn_web_token_private.h"
+#include "jsmn_tokens_private.h"
 
 static const char*
 alg_str(JSMN_WEB_TOKEN_ALG alg)
@@ -8,7 +8,7 @@ alg_str(JSMN_WEB_TOKEN_ALG alg)
                                                           "HS384",
                                                           "HS512" };
 
-    __jsmn_web_token_assert(alg >= 0 && alg < JSMN_WEB_TOKEN_ALG_COUNT);
+    __jsmn_assert(alg >= 0 && alg < JSMN_WEB_TOKEN_ALG_COUNT);
     return algs[alg];
 }
 
@@ -30,7 +30,7 @@ append_b64(jsmn_web_token_s* token, const char* buffer, uint32_t len)
 static inline void
 append_dot(jsmn_web_token_s* token)
 {
-    __jsmn_web_token_assert(token->len < sizeof(token->b));
+    __jsmn_assert(token->len < sizeof(token->b));
     token->b[token->len++] = '.';
 }
 

@@ -1,20 +1,20 @@
-# jsmn_web_token
+# jsmn_tokens
 
 # install headers
 set(INCLUDE_DIRECTORY ../include)
-set(INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_web_token.h)
+set(INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_tokens.h)
 
 # source files
 set(SOURCES
 	jsmn_helpers.c
-	jsmn_web_token.c)
+	jsmn_tokens.c)
 
 # header files
 set(HEADERS
 	${INSTALL_HEADERS}
 	jsmn.h
 	jsmn_helpers.h
-	jsmn_web_token_private.h)
+	jsmn_tokens_private.h)
 
 if (WITH_OPENSSL)
   include(../cmake/openssl.cmake)
@@ -34,35 +34,35 @@ else()
 endif()
 
 if(ENABLE_TESTING)
-  add_library(jsmn_web_token_testing STATIC ${SOURCES} ${HEADERS})
-  target_link_libraries(jsmn_web_token_testing ${CRYPTO_STATIC_LIBS})
-  target_include_directories(jsmn_web_token_testing PUBLIC ${INCLUDE_DIRECTORY})
-  target_include_directories(jsmn_web_token_testing PUBLIC ./)
-  target_compile_definitions(jsmn_web_token_testing PRIVATE ${DEFS})
-  set_target_properties(jsmn_web_token_testing PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
+  add_library(jsmn_tokens_testing STATIC ${SOURCES} ${HEADERS})
+  target_link_libraries(jsmn_tokens_testing ${CRYPTO_STATIC_LIBS})
+  target_include_directories(jsmn_tokens_testing PUBLIC ${INCLUDE_DIRECTORY})
+  target_include_directories(jsmn_tokens_testing PUBLIC ./)
+  target_compile_definitions(jsmn_tokens_testing PRIVATE ${DEFS})
+  set_target_properties(jsmn_tokens_testing PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
 endif()
 
 if(BUILD_SHARED)
-  add_library(jsmn_web_token_shared SHARED ${SOURCES} ${HEADERS})
-  target_link_libraries(jsmn_web_token_shared ${CRYPTO_SHARED_LIBS})
-  target_include_directories(jsmn_web_token_shared PUBLIC ${INCLUDE_DIRECTORY})
-  target_include_directories(jsmn_web_token_shared PRIVATE ./)
-  target_compile_definitions(jsmn_web_token_shared PRIVATE ${DEFS})
-  set_target_properties(jsmn_web_token_shared PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
-  install(TARGETS jsmn_web_token_shared
+  add_library(jsmn_tokens_shared SHARED ${SOURCES} ${HEADERS})
+  target_link_libraries(jsmn_tokens_shared ${CRYPTO_SHARED_LIBS})
+  target_include_directories(jsmn_tokens_shared PUBLIC ${INCLUDE_DIRECTORY})
+  target_include_directories(jsmn_tokens_shared PRIVATE ./)
+  target_compile_definitions(jsmn_tokens_shared PRIVATE ${DEFS})
+  set_target_properties(jsmn_tokens_shared PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
+  install(TARGETS jsmn_tokens_shared
           LIBRARY DESTINATION lib
           ARCHIVE DESTINATION lib
           PUBLIC_HEADER DESTINATION include/jsmn)
 endif()
 
 if(BUILD_STATIC)
-  add_library(jsmn_web_token_static STATIC ${SOURCES} ${HEADERS})
-  target_link_libraries(jsmn_web_token_static ${CRYPTO_STATIC_LIBS})
-  target_include_directories(jsmn_web_token_static PUBLIC ${INCLUDE_DIRECTORY})
-  target_include_directories(jsmn_web_token_static PRIVATE ./)
-  target_compile_definitions(jsmn_web_token_static PRIVATE ${DEFS})
-  set_target_properties(jsmn_web_token_static PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
-  install(TARGETS jsmn_web_token_static
+  add_library(jsmn_tokens_static STATIC ${SOURCES} ${HEADERS})
+  target_link_libraries(jsmn_tokens_static ${CRYPTO_STATIC_LIBS})
+  target_include_directories(jsmn_tokens_static PUBLIC ${INCLUDE_DIRECTORY})
+  target_include_directories(jsmn_tokens_static PRIVATE ./)
+  target_compile_definitions(jsmn_tokens_static PRIVATE ${DEFS})
+  set_target_properties(jsmn_tokens_static PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
+  install(TARGETS jsmn_tokens_static
           LIBRARY DESTINATION lib
           ARCHIVE DESTINATION lib
           PUBLIC_HEADER DESTINATION include/jsmn)

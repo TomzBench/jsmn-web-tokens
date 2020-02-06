@@ -3,7 +3,7 @@
 # --------------------------------------------------------------------------
 add_executable(test-jsmn main.c)
 target_link_libraries(test-jsmn
-                      jsmn_web_token_testing
+                      jsmn_tokens_testing
 		      cmocka)
 
 add_test(NAME test-jsmn COMMAND test-jsmn)

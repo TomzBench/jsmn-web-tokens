@@ -1,4 +1,4 @@
-#include "jsmn/jsmn_web_token.h"
+#include "jsmn/jsmn_tokens.h"
 #include "jsmn_helpers.h"
 
 #include <setjmp.h>

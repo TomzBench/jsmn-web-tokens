@@ -12,12 +12,13 @@ alg_to_str(JSMN_ALG alg)
 }
 
 static JSMN_ALG
-mem_to_alg(const char* mem, uint32_t len)
+str_to_alg(const char* str)
 {
+    uint32_t len = strlen(str);
     JSMN_ALG alg = JSMN_ALG_ERROR;
     if (len == 5) {
         for (int i = 0; i < JSMN_ALG_COUNT; i++) {
-            if (!memcmp(mem, alg_strings[i], 5)) {
+            if (!memcmp(str, alg_strings[i], 5)) {
                 alg = i;
                 break;
             }
@@ -26,10 +27,15 @@ mem_to_alg(const char* mem, uint32_t len)
     return alg;
 }
 
-static JSMN_ALG
-str_to_alg(const char* str)
+static uint32_t
+alg_to_keysize(JSMN_ALG alg)
 {
-    return mem_to_alg(str, strlen(str));
+    switch (alg) {
+        case JSMN_ALG_ERROR: return 0; break;
+        case JSMN_ALG_HS256: return 32; break;
+        case JSMN_ALG_HS384: return 48; break;
+        case JSMN_ALG_HS512: return 64; break;
+    }
 }
 
 static inline int
@@ -91,8 +97,8 @@ ERROR:
 int
 jsmn_token_sign(jsmn_token_s* t, const char* key, uint32_t keylen)
 {
-    char hash[32] = { 0 };
-    char bhash[64] = { 0 };
+    char hash[512] = { 0 };
+    char bhash[1024] = { 0 };
     int err;
     uint32_t l = 0;
 
@@ -101,7 +107,7 @@ jsmn_token_sign(jsmn_token_s* t, const char* key, uint32_t keylen)
 
     append_dot(t);
 
-    err = append_b64(t, hash, sizeof(hash));
+    err = append_b64(t, hash, alg_to_keysize(t->alg));
     if (err) goto ERROR;
 
 ERROR:
@@ -109,7 +115,11 @@ ERROR:
 }
 
 int
-jsmn_token_decode(jsmn_token_s* t, const char* token, uint32_t token_len)
+jsmn_token_decode(
+    jsmn_token_s* t,
+    JSMN_ALG alg,
+    const char* token,
+    uint32_t token_len)
 {
     return -1;
 }

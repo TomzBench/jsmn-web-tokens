@@ -34,12 +34,32 @@
  * base64 encode secret (false)
  */
 
-#define EXPECT_HEADER "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-#define EXPECT_PAYLOAD                                                         \
+#define EXPECT_HEADER_HS256 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+#define EXPECT_PAYLOAD_HS256                                                   \
     "eyJpc3MiOiJqc21uX3dlYl90b2tlbl9pc3MiLCJzdWIiOiJqc21uX3dlYl90b2tlbl9zdWIi" \
     "LCJpYXQiOjE1ODA2MDE2MDAsImV4cCI6MTU4MDYwMjIwMH0"
-#define EXPECT_SIGNATURE "mrv4Vr2tdq7W-cQAcUqvsjmj7_GvAvgJ-RgNa7HfjeQ"
-#define EXPECT_TOKEN EXPECT_HEADER "." EXPECT_PAYLOAD "." EXPECT_SIGNATURE
+#define EXPECT_SIGNATURE_HS256 "mrv4Vr2tdq7W-cQAcUqvsjmj7_GvAvgJ-RgNa7HfjeQ"
+#define EXPECT_TOKEN_HS256                                                     \
+    EXPECT_HEADER_HS256 "." EXPECT_PAYLOAD_HS256 "." EXPECT_SIGNATURE_HS256
+
+#define EXPECT_HEADER_HS384 "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9"
+#define EXPECT_PAYLOAD_HS384                                                   \
+    "eyJpc3MiOiJqc21uX3dlYl90b2tlbl9pc3MiLCJzdWIiOiJqc21uX3dlYl90b2tlbl9zdWIi" \
+    "LCJpYXQiOjE1ODA2MDE2MDAsImV4cCI6MTU4MDYwMjIwMH0"
+#define EXPECT_SIGNATURE_HS384                                                 \
+    "AI-BffUT9ymD44cIvsankVLBu89weikome1o4UQTHYgwftBgSXj30uqHEU5pfGws"
+#define EXPECT_TOKEN_HS384                                                     \
+    EXPECT_HEADER_HS384 "." EXPECT_PAYLOAD_HS384 "." EXPECT_SIGNATURE_HS384
+
+#define EXPECT_HEADER_HS512 "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9"
+#define EXPECT_PAYLOAD_HS512                                                   \
+    "eyJpc3MiOiJqc21uX3dlYl90b2tlbl9pc3MiLCJzdWIiOiJqc21uX3dlYl90b2tlbl9zdWIi" \
+    "LCJpYXQiOjE1ODA2MDE2MDAsImV4cCI6MTU4MDYwMjIwMH0"
+#define EXPECT_SIGNATURE_HS512                                                 \
+    "QpBq98RW3RqzhG8b4HXeTHEAybMxMTbwuT0OvyWF9XOlzHlgHLfTJ08UWgTJy7j_"         \
+    "I8W8okaB6iDWvb1wUcsreA"
+#define EXPECT_TOKEN_HS512                                                     \
+    EXPECT_HEADER_HS512 "." EXPECT_PAYLOAD_HS512 "." EXPECT_SIGNATURE_HS512
 
 #define PAYLOAD_FMT_STR                                                        \
     "{"                                                                        \
@@ -50,32 +70,42 @@
     "}"
 
 static void
-test_jsmn_token_init_ok(void** context_p)
+test_jsmn_token_init_ok_sha(void** context_p)
 {
     ((void)context_p);
 
     int err;
     jsmn_token_s token;
+    JSMN_ALG algs[] = { JSMN_ALG_HS256, JSMN_ALG_HS384, JSMN_ALG_HS512 };
+    const char* payloads[] = { EXPECT_HEADER_HS256 "." EXPECT_PAYLOAD_HS256,
+                               EXPECT_HEADER_HS384 "." EXPECT_PAYLOAD_HS384,
+                               EXPECT_HEADER_HS512 "." EXPECT_PAYLOAD_HS512 };
+    const char* tokens[] = { EXPECT_TOKEN_HS256,
+                             EXPECT_TOKEN_HS384,
+                             EXPECT_TOKEN_HS512 };
 
-    err = jsmn_token_init(
-        &token,
-        JSMN_ALG_HS256,
-        PAYLOAD_FMT_STR,
-        UNSAFE_ISS,
-        UNSAFE_SUB,
-        UNSAFE_IAT,
-        UNSAFE_EXP);
+    for (int i = 0; i < 3; i++) {
 
-    // Verify header + payload
-    assert_int_equal(err, 0);
-    assert_int_equal(strlen(EXPECT_HEADER "." EXPECT_PAYLOAD), token.len);
-    assert_memory_equal(EXPECT_HEADER "." EXPECT_PAYLOAD, token.b, token.len);
+        err = jsmn_token_init(
+            &token,
+            algs[i],
+            PAYLOAD_FMT_STR,
+            UNSAFE_ISS,
+            UNSAFE_SUB,
+            UNSAFE_IAT,
+            UNSAFE_EXP);
 
-    // Verify signature
-    err = jsmn_token_sign(&token, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
-    assert_int_equal(err, 0);
-    assert_int_equal(strlen(EXPECT_TOKEN), token.len);
-    assert_memory_equal(EXPECT_TOKEN, token.b, token.len);
+        // Verify header + payload
+        assert_int_equal(err, 0);
+        assert_int_equal(strlen(payloads[i]), token.len);
+        assert_memory_equal(payloads[i], token.b, token.len);
+
+        // Verify signature
+        err = jsmn_token_sign(&token, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
+        assert_int_equal(err, 0);
+        assert_int_equal(strlen(tokens[i]), token.len);
+        assert_memory_equal(tokens[i], token.b, token.len);
+    }
 }
 
 int
@@ -85,7 +115,7 @@ main(int argc, char* argv[])
     ((void)argv);
     int err;
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_jsmn_token_init_ok),
+        cmocka_unit_test(test_jsmn_token_init_ok_sha),
     };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);

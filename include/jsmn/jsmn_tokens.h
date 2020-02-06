@@ -61,7 +61,7 @@ extern "C"
 
     int jsmn_token_init(jsmn_token_s* t, JSMN_ALG alg, const char* claims, ...);
     int jsmn_token_sign(jsmn_token_s* t, const char* secret, uint32_t slen);
-    int jsmn_token_decode(jsmn_token_s* t, const char*, uint32_t);
+    int jsmn_token_decode(jsmn_token_s* t, JSMN_ALG alg, const char*, uint32_t);
 
 #ifdef __cplusplus
 }

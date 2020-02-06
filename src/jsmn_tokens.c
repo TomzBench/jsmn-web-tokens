@@ -44,7 +44,7 @@ append_b64(jsmn_token_s* token, const char* buffer, uint32_t len)
 {
     int err;
     uint32_t newlen;
-    err = crypto_base64_encode(
+    err = crypto_base64uri_encode(
         &token->b[token->len],
         sizeof(token->b) - token->len,
         &newlen,
@@ -59,24 +59,6 @@ append_dot(jsmn_token_s* token)
 {
     __jsmn_assert(token->len < sizeof(token->b));
     token->b[token->len++] = '.';
-}
-
-static int
-b64uri_to_b64(
-    char* dst,
-    uint32_t dlen,
-    uint32_t* len,
-    const char* src,
-    uint32_t slen)
-{
-    int err = -1;
-    uint32_t o = dlen;
-    char b64uri_decoded[JSMN_MAX_TOKEN_LEN];
-    err = crypto_base64uri_to_base64(b64uri_decoded, &o, src, slen);
-    if (!err) {
-        err = crypto_base64_decode(dst, dlen, len, b64uri_decoded, o);
-    }
-    return err;
 }
 
 int
@@ -140,6 +122,7 @@ jsmn_token_decode(
     const char* token,
     uint32_t token_len)
 {
+    // TODO investigate why when buffer is here it is currupted
     const char* dot;
     int err = -1, count;
     uint32_t l;
@@ -163,8 +146,8 @@ jsmn_token_decode(
     sig.p = ++dot;
     sig.len = token_len - head.len - body.len - 2;
 
-    char b[JSMN_MAX_TOKEN_LEN];
-    err = b64uri_to_b64(b, sizeof(b), &l, head.p, head.len);
+    char b[JSMN_MAX_TOKEN_HEADER_LEN];
+    err = crypto_base64uri_decode(b, sizeof(b), &l, head.p, head.len);
     if (err) goto ERROR;
 
     // clang-format off
@@ -172,7 +155,7 @@ jsmn_token_decode(
         t->head,
         JSMN_MAX_HEADER_TOKENS,
         b,
-        sizeof(b),
+        l,
         2,
         "alg", &alg,
         "typ", &typ);

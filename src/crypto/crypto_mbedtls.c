@@ -60,12 +60,8 @@ ERROR:
     return err;
 }
 
-int
-crypto_base64uri_to_base64(
-    char* dst,
-    uint32_t* dlen,
-    const char* src,
-    uint32_t len)
+static int
+b64uri_to_b64(char* dst, uint32_t* dlen, const char* src, uint32_t len)
 {
     int err = -1;
     uint32_t i, t, z;
@@ -88,7 +84,7 @@ crypto_base64uri_to_base64(
 }
 
 int
-crypto_base64_encode(
+crypto_base64uri_encode(
     char* dst,
     uint32_t dst_len,
     uint32_t* out_len,
@@ -102,15 +98,21 @@ crypto_base64_encode(
 }
 
 int
-crypto_base64_decode(
+crypto_base64uri_decode(
     char* dst,
-    uint32_t dst_len,
-    uint32_t* out_len,
+    uint32_t dlen,
+    uint32_t* olen,
     const char* src,
-    uint32_t src_len)
+    uint32_t slen)
 {
-    int err = mbedtls_base64_decode(
-        (byte*)dst, dst_len, (size_t*)out_len, (byte*)src, src_len);
+    int err;
+    char b[JSMN_MAX_TOKEN_LEN];
+    uint32_t blen = sizeof(b);
+    err = b64uri_to_b64(b, &blen, src, slen);
+    if (err) goto ERROR;
+    err = mbedtls_base64_decode(
+        (byte*)dst, dlen, (size_t*)olen, (byte*)b, blen);
+ERROR:
     return err;
 }
 

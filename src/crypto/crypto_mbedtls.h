@@ -16,13 +16,7 @@ extern "C"
 
     typedef unsigned char byte;
 
-    int crypto_base64uri_to_base64(
-        char* dst,
-        uint32_t* dlen,
-        const char* src,
-        uint32_t len);
-
-    int crypto_base64_encode(
+    int crypto_base64uri_encode(
         char* dst,
         uint32_t dst_len,
         uint32_t* out_len,
@@ -30,6 +24,13 @@ extern "C"
         uint32_t src_len);
 
     int crypto_base64_decode(
+        char* dst,
+        uint32_t dst_len,
+        uint32_t* out_len,
+        const char* src,
+        uint32_t src_len);
+
+    int crypto_base64uri_decode(
         char* dst,
         uint32_t dst_len,
         uint32_t* out_len,

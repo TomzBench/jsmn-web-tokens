@@ -33,7 +33,7 @@
 
 #endif
 
-#include "jsmn_web_token/jsmn_web_token.h"
+#include "jsmn/jsmn_web_token.h"
 
 #ifdef __cplusplus
 extern "C"

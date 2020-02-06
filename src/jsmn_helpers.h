@@ -1,7 +1,7 @@
 #ifndef JSMN_HELPERS_H
 #define JSMN_HELPERS_H
 
-#include "jsmn_web_token/jsmn_web_token.h"
+#include "jsmn/jsmn_web_token.h"
 #include "jsmn_web_token_private.h"
 
 #ifdef __cplusplus

@@ -2,7 +2,7 @@
 
 # install headers
 set(INCLUDE_DIRECTORY ../include)
-set(INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn_web_token/jsmn_web_token.h)
+set(INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_web_token.h)
 
 # source files
 set(SOURCES

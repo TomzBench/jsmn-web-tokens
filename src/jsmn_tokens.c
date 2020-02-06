@@ -123,6 +123,7 @@ jsmn_token_decode(
     uint32_t token_len)
 {
     // TODO investigate why when buffer is here it is currupted
+    char b[JSMN_MAX_TOKEN_HEADER_LEN];
     const char* dot;
     int err = -1, count;
     uint32_t l;
@@ -146,7 +147,6 @@ jsmn_token_decode(
     sig.p = ++dot;
     sig.len = token_len - head.len - body.len - 2;
 
-    char b[JSMN_MAX_TOKEN_HEADER_LEN];
     err = crypto_base64uri_decode(b, sizeof(b), &l, head.p, head.len);
     if (err) goto ERROR;
 

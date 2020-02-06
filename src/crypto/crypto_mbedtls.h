@@ -3,7 +3,6 @@
 
 #include "jsmn_tokens_private.h"
 
-#include "mbedtls/base64.h"
 #include "mbedtls/md.h"
 #include "mbedtls/sha1.h"
 #include "mbedtls/sha256.h"

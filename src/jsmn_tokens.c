@@ -2,18 +2,16 @@
 #include "jsmn_tokens_private.h"
 
 static const char*
-alg_str(JSMN_WEB_TOKEN_ALG alg)
+alg_str(JSMN_ALG alg)
 {
-    static const char* algs[JSMN_WEB_TOKEN_ALG_COUNT] = { "HS256",
-                                                          "HS384",
-                                                          "HS512" };
+    static const char* algs[JSMN_ALG_COUNT] = { "HS256", "HS384", "HS512" };
 
-    __jsmn_assert(alg >= 0 && alg < JSMN_WEB_TOKEN_ALG_COUNT);
+    __jsmn_assert(alg >= 0 && alg < JSMN_ALG_COUNT);
     return algs[alg];
 }
 
 static inline int
-append_b64(jsmn_web_token_s* token, const char* buffer, uint32_t len)
+append_b64(jsmn_token_s* token, const char* buffer, uint32_t len)
 {
     int err;
     uint32_t newlen;
@@ -28,24 +26,20 @@ append_b64(jsmn_web_token_s* token, const char* buffer, uint32_t len)
 }
 
 static inline void
-append_dot(jsmn_web_token_s* token)
+append_dot(jsmn_token_s* token)
 {
     __jsmn_assert(token->len < sizeof(token->b));
     token->b[token->len++] = '.';
 }
 
 int
-jsmn_web_token_init(
-    jsmn_web_token_s* token,
-    JSMN_WEB_TOKEN_ALG alg,
-    const char* claims,
-    ...)
+jsmn_token_init(jsmn_token_s* token, JSMN_ALG alg, const char* claims, ...)
 {
     int err = -1;
-    char buffer[JSMN_WEB_TOKEN_MAX_LEN];
+    char buffer[JSMN_MAX_LEN];
     va_list list;
 
-    memset(token, 0, sizeof(jsmn_web_token_s));
+    memset(token, 0, sizeof(jsmn_token_s));
     token->alg = alg;
 
     // print the header
@@ -73,7 +67,7 @@ ERROR:
 }
 
 int
-jsmn_web_token_sign(jsmn_web_token_s* t, const char* key, uint32_t keylen)
+jsmn_token_sign(jsmn_token_s* t, const char* key, uint32_t keylen)
 {
     char hash[32] = { 0 };
     char bhash[64] = { 0 };
@@ -93,10 +87,7 @@ ERROR:
 }
 
 int
-jsmn_web_token_decode(
-    jsmn_web_token_s* t,
-    const char* token,
-    uint32_t token_len)
+jsmn_token_decode(jsmn_token_s* t, const char* token, uint32_t token_len)
 {
     return -1;
 }

@@ -50,16 +50,16 @@
     "}"
 
 static void
-test_jsmn_web_token_init_ok(void** context_p)
+test_jsmn_token_init_ok(void** context_p)
 {
     ((void)context_p);
 
     int err;
-    jsmn_web_token_s token;
+    jsmn_token_s token;
 
-    err = jsmn_web_token_init(
+    err = jsmn_token_init(
         &token,
-        JSMN_WEB_TOKEN_ALG_HS256,
+        JSMN_ALG_HS256,
         PAYLOAD_FMT_STR,
         UNSAFE_ISS,
         UNSAFE_SUB,
@@ -72,7 +72,7 @@ test_jsmn_web_token_init_ok(void** context_p)
     assert_memory_equal(EXPECT_HEADER "." EXPECT_PAYLOAD, token.b, token.len);
 
     // Verify signature
-    err = jsmn_web_token_sign(&token, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
+    err = jsmn_token_sign(&token, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
     assert_int_equal(err, 0);
     assert_int_equal(strlen(EXPECT_TOKEN), token.len);
     assert_memory_equal(EXPECT_TOKEN, token.b, token.len);
@@ -85,7 +85,7 @@ main(int argc, char* argv[])
     ((void)argv);
     int err;
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_jsmn_web_token_init_ok),
+        cmocka_unit_test(test_jsmn_token_init_ok),
     };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);

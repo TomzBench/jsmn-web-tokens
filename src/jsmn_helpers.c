@@ -52,7 +52,7 @@ map_key_to_value(
     while (c >= 2) {
         c -= 2;
         cmp = va_arg(list, char*);
-        jsmn_web_token_value* result = va_arg(list, jsmn_web_token_value*);
+        jsmn_value* result = va_arg(list, jsmn_value*);
         if (keylen == strlen(cmp) && !memcmp(key, cmp, keylen)) {
             result->len = value_len;
             result->p = value;
@@ -72,7 +72,7 @@ jsmn_parse_tokens(
     ...)
 {
     uint32_t n_tokens, i = 0;
-    jsmn_web_token_value tag = { .p = NULL, .len = 0 };
+    jsmn_value tag = { .p = NULL, .len = 0 };
     jsmn_parser p;
     jsmn_init(&p);
     uint32_t count = 0;

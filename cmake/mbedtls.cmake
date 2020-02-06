@@ -85,3 +85,11 @@ add_library(x509-shared STATIC IMPORTED)
 set_property(TARGET x509-shared PROPERTY IMPORTED_LOCATION ${x509_shared_LIBRARY})
 set_property(TARGET x509-shared PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${mbedtls_INCLUDE_DIR})
 add_dependencies(x509-shared mbedtls-project)
+
+if(WITH_SYSTEM_DEPENDENCIES)
+
+else()
+  set(MBEDTLS_STATIC_LIBRARIES crypto-static tls-static x509-static)
+  set(MBEDTLS_SHARED_LIBRARIES crypto-shared tls-shared x509-shared)
+
+endif()

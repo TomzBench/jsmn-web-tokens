@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.11...3.16)
-project(jsmn_web_token)
+project(jsmn_tokens)
 
 find_package(Git)
 if(NOT Git_FOUND)
@@ -15,6 +15,7 @@ option(WITH_OPENSSL "Link crypto primatives against openssl" OFF)
 option(WITH_GNUTLS "Link crypto primatives against gnutls" OFF)
 option(WITH_MBEDTLS "Link crypto primatives against mbedtls" ON)
 option(WITH_WOLFSSL "Link crypto primatives against wolfssl" OFF)
+option(WITH_SYSTEM_DEPENDENCIES "Do not build dependencies" OFF)
 
 if(ENABLE_TESTING)
   set(CMAKE_BUILD_TYPE Debug)

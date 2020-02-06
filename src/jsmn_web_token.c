@@ -27,6 +27,13 @@ append_b64(jsmn_web_token_s* token, const char* buffer, uint32_t len)
     return err;
 }
 
+static inline void
+append_dot(jsmn_web_token_s* token)
+{
+    __jsmn_web_token_assert(token->len < sizeof(token->b));
+    token->b[token->len++] = '.';
+}
+
 int
 jsmn_web_token_init(
     jsmn_web_token_s* token,
@@ -51,9 +58,11 @@ jsmn_web_token_init(
     // b64(header)
     err = append_b64(token, buffer, l);
     if (err) goto ERROR;
-    token->b[token->len++] = '.';
 
-    // b64(header).B64(payload)
+    // b64(headar) .
+    append_dot(token);
+
+    // b64(header) . B64(payload)
     va_start(list, claims);
     l = vsnprintf(buffer, sizeof(buffer), claims, list);
     va_end(list);
@@ -74,11 +83,20 @@ jsmn_web_token_sign(jsmn_web_token_s* t, const char* key, uint32_t keylen)
     err = crypto_hmac256(hash, t->b, t->len, (byte*)key, keylen);
     if (err) goto ERROR;
 
-    t->b[t->len++] = '.';
+    append_dot(t);
 
     err = append_b64(t, hash, sizeof(hash));
     if (err) goto ERROR;
 
 ERROR:
     return err;
+}
+
+int
+jsmn_web_token_decode(
+    jsmn_web_token_s* t,
+    const char* token,
+    uint32_t token_len)
+{
+    return -1;
 }

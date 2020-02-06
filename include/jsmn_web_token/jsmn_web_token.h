@@ -34,6 +34,11 @@ extern "C"
     } JSMN_WEB_TOKEN_ALG;
 #define JSMN_WEB_TOKEN_ALG_COUNT 3
 
+    typedef enum JSMN_WEB_TOKEN_ERROR
+    {
+        JSMN_WEB_TOKEN_ERROR_OK = 0
+    } JSMN_WEB_TOKEN_ERROR;
+
     typedef struct jsmn_web_token_s
     {
         JSMN_WEB_TOKEN_ALG alg;
@@ -51,6 +56,11 @@ extern "C"
         jsmn_web_token_s* token,
         const char* secret,
         uint32_t slen);
+
+    int jsmn_web_token_decode(
+        jsmn_web_token_s* t,
+        const char* token,
+        uint32_t token_len);
 
 #ifdef __cplusplus
 }

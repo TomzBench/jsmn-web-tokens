@@ -22,7 +22,7 @@ set(HEADERS
 
 list(APPEND DEFS "-DJSMN_MAX_LEN=${JSMN_MAX_LEN}")
 list(APPEND DEFS "-DJSMN_MAX_TOKENS=${JSMN_MAX_TOKENS}")
-list(APPEND DEFS "-DJSMN_HEADER_FILE=\"${JSMN_HEADER_FILE}\"")
+list(APPEND PUBDEFS "-DJSMN_HEADER_FILE=\"${JSMN_HEADER_FILE}\"")
 
 if (WITH_OPENSSL)
   include(../cmake/openssl.cmake)
@@ -47,6 +47,7 @@ if(ENABLE_TESTING)
   target_include_directories(jsmn_tokens_testing PUBLIC ${INCLUDE_DIRECTORY})
   target_include_directories(jsmn_tokens_testing PUBLIC ./)
   target_compile_definitions(jsmn_tokens_testing PUBLIC ${DEFS})
+  target_compile_definitions(jsmn_tokens_testing PUBLIC ${PUBDEFS})
   set_target_properties(jsmn_tokens_testing PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
 endif()
 
@@ -56,6 +57,7 @@ if(BUILD_SHARED)
   target_include_directories(jsmn_tokens_shared PUBLIC ${INCLUDE_DIRECTORY})
   target_include_directories(jsmn_tokens_shared PRIVATE ./)
   target_compile_definitions(jsmn_tokens_shared PRIVATE ${DEFS})
+  target_compile_definitions(jsmn_tokens_shared PUBLIC ${PUBDEFS})
   set_target_properties(jsmn_tokens_shared PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
   install(TARGETS jsmn_tokens_shared
           LIBRARY DESTINATION lib
@@ -69,6 +71,7 @@ if(BUILD_STATIC)
   target_include_directories(jsmn_tokens_static PUBLIC ${INCLUDE_DIRECTORY})
   target_include_directories(jsmn_tokens_static PRIVATE ./)
   target_compile_definitions(jsmn_tokens_static PRIVATE ${DEFS})
+  target_compile_definitions(jsmn_tokens_static PUBLIC ${PUBDEFS})
   set_target_properties(jsmn_tokens_static PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
   install(TARGETS jsmn_tokens_static
           LIBRARY DESTINATION lib

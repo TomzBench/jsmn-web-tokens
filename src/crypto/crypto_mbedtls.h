@@ -30,13 +30,13 @@ extern "C"
         const char* src,
         uint32_t src_len);
 
-    int crypto_sha256(const char* input, uint32_t ilen, char* output);
-    int crypto_hmac256(
+    int crypto_sign(
         char* dst,
         const char* p,
         uint32_t plen,
-        const byte* s,
-        uint32_t slen);
+        const byte* key,
+        uint32_t keylen,
+        JSMN_ALG alg);
 
 #ifdef __cplusplus
 }

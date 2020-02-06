@@ -42,14 +42,14 @@ crypto_base64_dencode(
     return err;
 }
 
-int
-crypto_sha256(const char* input, uint32_t ilen, char* output)
+static int
+sha256(const char* input, uint32_t ilen, char* output)
 {
     return mbedtls_sha256_ret((byte*)input, ilen, (byte*)output, 0);
 }
 
-int
-crypto_hmac256(
+static int
+hmac256(
     char* dst,
     const char* p,
     uint32_t plen,
@@ -77,4 +77,23 @@ crypto_hmac256(
 ERROR:
     mbedtls_md_free(&ctx);
     return err;
+}
+
+int
+crypto_sign(
+    char* dst,
+    const char* p,
+    uint32_t plen,
+    const byte* key,
+    uint32_t keylen,
+    JSMN_ALG alg)
+{
+    int ret = -1;
+    switch (alg) {
+        case JSMN_ALG_HS256: ret = hmac256(dst, p, plen, key, keylen); break;
+        case JSMN_ALG_HS384: break;
+        case JSMN_ALG_HS512: break;
+        default: break;
+    }
+    return ret;
 }

@@ -74,7 +74,7 @@ jsmn_token_sign(jsmn_token_s* t, const char* key, uint32_t keylen)
     int err;
     uint32_t l = 0;
 
-    err = crypto_hmac256(hash, t->b, t->len, (byte*)key, keylen);
+    err = crypto_sign(hash, t->b, t->len, (byte*)key, keylen, t->alg);
     if (err) goto ERROR;
 
     append_dot(t);

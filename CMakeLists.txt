@@ -25,6 +25,16 @@ if(ENABLE_TESTING)
   include(cmake/CodeCoverage.cmake)
   add_subdirectory(test/jsmn)
   add_subdirectory(test/tokens)
+
+  APPEND_COVERAGE_COMPILER_FLAGS()
+  set(COVERAGE_LCOV_EXCLUDES
+    "${PROJECT_SOURCE_DIR}/examples"
+    "${PROJECT_SOURCE_DIR}/test")
+
+  setup_target_for_coverage_lcov(NAME test-coverage
+    EXECUTABLE test-jsmn
+    COMMAND test-tokens)
+
 endif()
 
 if(BUILD_EXAMPLES)

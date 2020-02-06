@@ -8,6 +8,7 @@ endif()
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
+# BOOL OPTIONS
 option(BUILD_SHARED "Whether or not to build the shared object"  ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)
 # option(BUILD_EXAMPLES "Whether or not to build the examples" OFF)
@@ -16,6 +17,10 @@ option(WITH_GNUTLS "Link crypto primatives against gnutls" OFF)
 option(WITH_MBEDTLS "Link crypto primatives against mbedtls" ON)
 option(WITH_WOLFSSL "Link crypto primatives against wolfssl" OFF)
 option(WITH_SYSTEM_DEPENDENCIES "Do not build dependencies" OFF)
+
+# OPTIONS
+set(JSMN_MAX_LEN 256 CACHE STRING "Largest token supported")
+set(JSMN_MAX_TOKENS 64 CACHE STRING "Largest decoded token supported")
 
 if(ENABLE_TESTING)
   set(CMAKE_BUILD_TYPE Debug)

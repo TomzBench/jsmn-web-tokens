@@ -16,6 +16,9 @@ set(HEADERS
 	jsmn_helpers.h
 	jsmn_tokens_private.h)
 
+list(APPEND DEFS "-DJSMN_MAX_LEN=${JSMN_MAX_LEN}")
+list(APPEND DEFS "-DJSMN_MAX_TOKENS=${JSMN_MAX_TOKENS}")
+
 if (WITH_OPENSSL)
   include(../cmake/openssl.cmake)
 elseif(WITH_GNUTLS)

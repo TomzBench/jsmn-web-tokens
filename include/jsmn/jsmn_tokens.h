@@ -8,6 +8,10 @@
 #define JSMN_MAX_LEN 256
 #endif
 
+#ifndef JSMN_MAX_TOKENS
+#define JSMN_MAX_TOKENS 64
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -45,6 +49,10 @@ extern "C"
         uint32_t len;
         char b[JSMN_MAX_LEN];
     } jsmn_token_s;
+
+    typedef struct jsmn_token_decoded_s
+    {
+    } jsmn_token_decoded_s;
 
     int jsmn_token_init(jsmn_token_s* t, JSMN_ALG alg, const char* claims, ...);
     int jsmn_token_sign(jsmn_token_s* t, const char* secret, uint32_t slen);

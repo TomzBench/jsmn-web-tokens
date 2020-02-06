@@ -12,6 +12,9 @@
 #define JSMN_MAX_TOKENS 64
 #endif
 
+#define JSMN_HEADER
+#include JSMN_HEADER_FILE
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -52,6 +55,7 @@ extern "C"
 
     typedef struct jsmn_token_decoded_s
     {
+        jsmntok_t tok[JSMN_MAX_TOKENS];
     } jsmn_token_decoded_s;
 
     int jsmn_token_init(jsmn_token_s* t, JSMN_ALG alg, const char* claims, ...);

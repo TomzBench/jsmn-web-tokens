@@ -1,8 +1,13 @@
 # jsmn_tokens
 
+message(STATUS "JSMN_HEADER_FILE: ${JSMN_HEADER_FILE}")
+
 # install headers
 set(INCLUDE_DIRECTORY ../include)
-set(INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_tokens.h)
+list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_tokens.h)
+if(WITH_JSMN_HEADER_INSTALL)
+  list(APPEND INSTALL_HEADERS ${JSMN_HEADER_FILE})
+endif()
 
 # source files
 set(SOURCES
@@ -12,12 +17,12 @@ set(SOURCES
 # header files
 set(HEADERS
 	${INSTALL_HEADERS}
-	jsmn.h
 	jsmn_helpers.h
 	jsmn_tokens_private.h)
 
 list(APPEND DEFS "-DJSMN_MAX_LEN=${JSMN_MAX_LEN}")
 list(APPEND DEFS "-DJSMN_MAX_TOKENS=${JSMN_MAX_TOKENS}")
+list(APPEND DEFS "-DJSMN_HEADER_FILE=\"${JSMN_HEADER_FILE}\"")
 
 if (WITH_OPENSSL)
   include(../cmake/openssl.cmake)
@@ -41,7 +46,7 @@ if(ENABLE_TESTING)
   target_link_libraries(jsmn_tokens_testing ${CRYPTO_STATIC_LIBS})
   target_include_directories(jsmn_tokens_testing PUBLIC ${INCLUDE_DIRECTORY})
   target_include_directories(jsmn_tokens_testing PUBLIC ./)
-  target_compile_definitions(jsmn_tokens_testing PRIVATE ${DEFS})
+  target_compile_definitions(jsmn_tokens_testing PUBLIC ${DEFS})
   set_target_properties(jsmn_tokens_testing PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
 endif()
 

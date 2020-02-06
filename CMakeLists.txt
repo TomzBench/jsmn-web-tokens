@@ -17,10 +17,12 @@ option(WITH_GNUTLS "Link crypto primatives against gnutls" OFF)
 option(WITH_MBEDTLS "Link crypto primatives against mbedtls" ON)
 option(WITH_WOLFSSL "Link crypto primatives against wolfssl" OFF)
 option(WITH_SYSTEM_DEPENDENCIES "Do not build dependencies" OFF)
+option(WITH_JSMN_HEADER_INSTALL "Install the jasmine header" ON)
 
 # OPTIONS
 set(JSMN_MAX_LEN 256 CACHE STRING "Largest token supported")
 set(JSMN_MAX_TOKENS 64 CACHE STRING "Largest decoded token supported")
+set(JSMN_HEADER_FILE "${CMAKE_SOURCE_DIR}/include/jsmn/jsmn.h" CACHE FILEPATH "")
 
 if(ENABLE_TESTING)
   set(CMAKE_BUILD_TYPE Debug)

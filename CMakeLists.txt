@@ -20,7 +20,8 @@ option(WITH_SYSTEM_DEPENDENCIES "Do not build dependencies" OFF)
 option(WITH_JSMN_HEADER_INSTALL "Install the jasmine header" ON)
 
 # OPTIONS
-set(JSMN_MAX_LEN 256 CACHE STRING "Largest token supported")
+set(JSMN_MAX_TOKEN_LEN 256 CACHE STRING "Largest token supported")
+set(JSMN_MAX_TOKEN_HEADER_LEN 64 CACHE STRING "Largest token header supported")
 set(JSMN_MAX_TOKENS 64 CACHE STRING "Largest decoded token supported")
 set(JSMN_HEADER_FILE "${CMAKE_SOURCE_DIR}/include/jsmn/jsmn.h" CACHE FILEPATH "")
 

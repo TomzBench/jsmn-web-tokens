@@ -61,6 +61,33 @@ ERROR:
 }
 
 int
+crypto_base64uri_to_base64(
+    char* dst,
+    uint32_t* dlen,
+    const char* src,
+    uint32_t len)
+{
+    int err = -1;
+    uint32_t i, t, z;
+    if (*dlen > len + 4) {
+        for (i = 0; i < len; i++) {
+            switch (src[i]) {
+                case '-': dst[i] = '+'; break;
+                case '_': dst[i] = '/'; break;
+                default: dst[i] = src[i];
+            }
+        }
+        z = 4 - (i % 4);
+        if (z < 4) {
+            while (z--) dst[i++] = '=';
+        }
+        *dlen = i;
+        err = 0;
+    }
+    return err;
+}
+
+int
 crypto_base64_encode(
     char* dst,
     uint32_t dst_len,
@@ -75,7 +102,7 @@ crypto_base64_encode(
 }
 
 int
-crypto_base64_dencode(
+crypto_base64_decode(
     char* dst,
     uint32_t dst_len,
     uint32_t* out_len,

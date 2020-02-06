@@ -4,12 +4,20 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#ifndef JSMN_MAX_LEN
-#define JSMN_MAX_LEN 256
+#ifndef JSMN_MAX_TOKEN_LEN
+#define JSMN_MAX_TOKEN_LEN 256
+#endif
+
+#ifndef JSMN_MAX_TOKEN_HEADER_LEN
+#define JSMN_MAX_TOKEN_HEADER_LEN 64
 #endif
 
 #ifndef JSMN_MAX_TOKENS
 #define JSMN_MAX_TOKENS 64
+#endif
+
+#ifndef JSMN_MAX_HEADER_TOKENS
+#define JSMN_MAX_HEADER_TOKENS 16
 #endif
 
 #define JSMN_HEADER
@@ -51,17 +59,21 @@ extern "C"
     {
         JSMN_ALG alg;
         uint32_t len;
-        char b[JSMN_MAX_LEN];
+        char b[JSMN_MAX_TOKEN_LEN];
     } jsmn_token_s;
 
     typedef struct jsmn_token_decoded_s
     {
-        jsmntok_t tok[JSMN_MAX_TOKENS];
-    } jsmn_token_decoded_s;
+        JSMN_ALG alg;
+        jsmntok_t head[JSMN_MAX_HEADER_TOKENS];
+        jsmntok_t body[JSMN_MAX_TOKENS];
+        char b[JSMN_MAX_TOKEN_LEN];
+    } jsmn_token_decode_s;
 
     int jsmn_token_init(jsmn_token_s* t, JSMN_ALG alg, const char* claims, ...);
     int jsmn_token_sign(jsmn_token_s* t, const char* secret, uint32_t slen);
-    int jsmn_token_decode(jsmn_token_s* t, JSMN_ALG alg, const char*, uint32_t);
+    int
+    jsmn_token_decode(jsmn_token_decode_s*, JSMN_ALG, const char*, uint32_t);
 
 #ifdef __cplusplus
 }

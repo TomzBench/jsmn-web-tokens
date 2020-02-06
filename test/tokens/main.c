@@ -70,7 +70,7 @@
     "}"
 
 static void
-test_jsmn_token_init_ok_sha(void** context_p)
+test_jsmn_token_init_ok(void** context_p)
 {
     ((void)context_p);
 
@@ -108,6 +108,19 @@ test_jsmn_token_init_ok_sha(void** context_p)
     }
 }
 
+static void
+test_jsmn_token_decode_ok(void** context_p)
+{
+    int err;
+    jsmn_token_decode_s token;
+    JSMN_ALG algs[] = { JSMN_ALG_HS256, JSMN_ALG_HS384, JSMN_ALG_HS512 };
+    const char* tokens[] = { EXPECT_TOKEN_HS256,
+                             EXPECT_TOKEN_HS384,
+                             EXPECT_TOKEN_HS512 };
+
+    err = jsmn_token_decode(&token, algs[0], tokens[0], strlen(tokens[0]));
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -115,7 +128,8 @@ main(int argc, char* argv[])
     ((void)argv);
     int err;
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_jsmn_token_init_ok_sha),
+        cmocka_unit_test(test_jsmn_token_init_ok),
+        cmocka_unit_test(test_jsmn_token_decode_ok),
     };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);

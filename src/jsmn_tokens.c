@@ -1,4 +1,5 @@
 #include "crypto/crypto.h"
+#include "jsmn_helpers.h"
 #include "jsmn_tokens_private.h"
 
 static const char* alg_strings[JSMN_ALG_COUNT] = { "HS256", "HS384", "HS512" };
@@ -60,11 +61,29 @@ append_dot(jsmn_token_s* token)
     token->b[token->len++] = '.';
 }
 
+static int
+b64uri_to_b64(
+    char* dst,
+    uint32_t dlen,
+    uint32_t* len,
+    const char* src,
+    uint32_t slen)
+{
+    int err = -1;
+    uint32_t o = dlen;
+    char b64uri_decoded[JSMN_MAX_TOKEN_LEN];
+    err = crypto_base64uri_to_base64(b64uri_decoded, &o, src, slen);
+    if (!err) {
+        err = crypto_base64_decode(dst, dlen, len, b64uri_decoded, o);
+    }
+    return err;
+}
+
 int
 jsmn_token_init(jsmn_token_s* token, JSMN_ALG alg, const char* claims, ...)
 {
     int err = -1;
-    char buffer[JSMN_MAX_LEN];
+    char buffer[JSMN_MAX_TOKEN_LEN];
     va_list list;
 
     memset(token, 0, sizeof(jsmn_token_s));
@@ -116,10 +135,51 @@ ERROR:
 
 int
 jsmn_token_decode(
-    jsmn_token_s* t,
-    JSMN_ALG alg,
+    jsmn_token_decode_s* t,
+    JSMN_ALG use_alg,
     const char* token,
     uint32_t token_len)
 {
+    const char* dot;
+    int err = -1, count;
+    uint32_t l;
+    jsmn_value head, body, sig, alg, typ;
+
+    memset(t, 0, sizeof(jsmn_token_decode_s));
+
+    // populate head
+    head.p = token;
+    dot = memchr(token, '.', token_len);
+    if (!dot) goto ERROR;
+    head.len = dot - head.p;
+
+    // populate body
+    body.p = ++dot;
+    dot = memchr(dot, '.', &token[token_len] - dot);
+    if (!dot) goto ERROR;
+    body.len = dot - body.p;
+
+    // populate sig
+    sig.p = ++dot;
+    sig.len = token_len - head.len - body.len - 2;
+
+    char b[JSMN_MAX_TOKEN_LEN];
+    err = b64uri_to_b64(b, sizeof(b), &l, head.p, head.len);
+    if (err) goto ERROR;
+
+    // clang-format off
+    count = jsmn_parse_tokens(
+        t->head,
+        JSMN_MAX_HEADER_TOKENS,
+        b,
+        sizeof(b),
+        2,
+        "alg", &alg,
+        "typ", &typ);
+    // clang-format on
+
+    if (!(count >= 2)) goto ERROR;
+
+ERROR:
     return -1;
 }

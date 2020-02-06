@@ -23,13 +23,7 @@ append_b64(jsmn_web_token_s* token, const char* buffer, uint32_t len)
         &newlen,
         buffer,
         len);
-    if (!err) {
-        // base64url encoding w/o padding.
-        token->len += newlen;
-        // TODO move to crypto
-        if (token->b[token->len - 1] == '=') token->len--;
-        if (token->b[token->len - 1] == '=') token->len--;
-    }
+    if (!err) token->len += newlen;
     return err;
 }
 
@@ -72,14 +66,15 @@ ERROR:
 int
 jsmn_web_token_sign(jsmn_web_token_s* t, const char* key, uint32_t keylen)
 {
-    char hash[16] = { 0 };
+    char hash[32] = { 0 };
     char bhash[64] = { 0 };
     int err;
     uint32_t l = 0;
 
-    t->b[t->len++] = '.';
     err = crypto_hmac256(hash, t->b, t->len, (byte*)key, keylen);
     if (err) goto ERROR;
+
+    t->b[t->len++] = '.';
 
     err = append_b64(t, hash, sizeof(hash));
     if (err) goto ERROR;

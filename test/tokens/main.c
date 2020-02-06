@@ -16,7 +16,7 @@
     "eyJpc3MiOiJqc21uX3dlYl90b2tlbl9pc3MiLCJzdWIiOiJqc21uX3dlYl90b2tlbl9zdWIi" \
     "LCJpYXQiOjE1ODA2MDE2MDAsImV4cCI6MTU4MDYwMjIwMH0"
 #define EXPECT_SIGNATURE "mrv4Vr2tdq7W-cQAcUqvsjmj7_GvAvgJ-RgNa7HfjeQ"
-#define EXPECT_TOKEN EXPECT_HEADER "." EXPECT_PAYLOAD
+#define EXPECT_TOKEN EXPECT_HEADER "." EXPECT_PAYLOAD "." EXPECT_SIGNATURE
 
 #define PAYLOAD_FMT_STR                                                        \
     "{"                                                                        \
@@ -33,7 +33,6 @@ test_jsmn_web_token_init_ok(void** context_p)
 
     int err;
     jsmn_web_token_s token;
-    const char* expect = EXPECT_TOKEN;
 
     err = jsmn_web_token_init(
         &token,
@@ -45,12 +44,13 @@ test_jsmn_web_token_init_ok(void** context_p)
         UNSAFE_EXP);
 
     assert_int_equal(err, 0);
-    assert_int_equal(strlen(EXPECT_TOKEN), token.len);
-    assert_memory_equal(EXPECT_TOKEN, token.b, token.len);
+    assert_int_equal(strlen(EXPECT_HEADER "." EXPECT_PAYLOAD), token.len);
+    assert_memory_equal(EXPECT_HEADER "." EXPECT_PAYLOAD, token.b, token.len);
 
     err = jsmn_web_token_sign(&token, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
-
     assert_int_equal(err, 0);
+    assert_int_equal(strlen(EXPECT_TOKEN), token.len);
+    assert_memory_equal(EXPECT_TOKEN, token.b, token.len);
 }
 
 int

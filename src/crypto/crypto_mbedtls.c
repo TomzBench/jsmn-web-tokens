@@ -1,5 +1,20 @@
 #include "crypto_mbedtls.h"
 
+static void
+uri_encode(char* str, uint32_t* len)
+{
+    uint32_t i, t;
+
+    for (i = t = 0; i < *len; i++) {
+        switch (str[i]) {
+            case '+': str[t++] = '-'; break;
+            case '/': str[t++] = '_'; break;
+            case '=': break;
+            default: str[t++] = str[i];
+        }
+    }
+    *len = t;
+}
 int
 crypto_base64_encode(
     char* dst,
@@ -8,8 +23,10 @@ crypto_base64_encode(
     const char* src,
     uint32_t src_len)
 {
-    return mbedtls_base64_encode(
+    int err = mbedtls_base64_encode(
         (byte*)dst, dst_len, (size_t*)out_len, (byte*)src, src_len);
+    if (!err) uri_encode(dst, out_len);
+    return err;
 }
 
 int
@@ -20,8 +37,9 @@ crypto_base64_dencode(
     const char* src,
     uint32_t src_len)
 {
-    return mbedtls_base64_decode(
+    int err = mbedtls_base64_decode(
         (byte*)dst, dst_len, (size_t*)out_len, (byte*)src, src_len);
+    return err;
 }
 
 int

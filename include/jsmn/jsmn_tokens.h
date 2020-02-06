@@ -28,6 +28,7 @@ extern "C"
 
     typedef enum JSMN_ALG
     {
+        JSMN_ALG_ERROR = -1,
         JSMN_ALG_HS256 = 0,
         JSMN_ALG_HS384 = 1,
         JSMN_ALG_HS512 = 2,

@@ -1,13 +1,35 @@
 #include "crypto/crypto.h"
 #include "jsmn_tokens_private.h"
 
+static const char* alg_strings[JSMN_ALG_COUNT] = { "HS256", "HS384", "HS512" };
+
 static const char*
-alg_str(JSMN_ALG alg)
+alg_to_str(JSMN_ALG alg)
 {
-    static const char* algs[JSMN_ALG_COUNT] = { "HS256", "HS384", "HS512" };
 
     __jsmn_assert(alg >= 0 && alg < JSMN_ALG_COUNT);
-    return algs[alg];
+    return alg_strings[alg];
+}
+
+static JSMN_ALG
+mem_to_alg(const char* mem, uint32_t len)
+{
+    JSMN_ALG alg = JSMN_ALG_ERROR;
+    if (len == 5) {
+        for (int i = 0; i < JSMN_ALG_COUNT; i++) {
+            if (!memcmp(mem, alg_strings[i], 5)) {
+                alg = i;
+                break;
+            }
+        }
+    }
+    return alg;
+}
+
+static JSMN_ALG
+str_to_alg(const char* str)
+{
+    return mem_to_alg(str, strlen(str));
 }
 
 static inline int
@@ -47,7 +69,7 @@ jsmn_token_init(jsmn_token_s* token, JSMN_ALG alg, const char* claims, ...)
                        buffer,
                        sizeof(buffer),
                        "{\"alg\":\"%s\",\"typ\":\"JWT\"}",
-                       alg_str(alg));
+                       alg_to_str(alg));
 
     // b64(header)
     err = append_b64(token, buffer, l);

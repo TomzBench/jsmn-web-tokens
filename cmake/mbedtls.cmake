@@ -1,12 +1,27 @@
 set(MBEDTLS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/mbedtls)
 set(MBEDTLS_CRYPTO_TEST_FILE ${MBEDTLS_SOURCE_DIR}/crypto/CMakeLists.txt)
 
-# clone git submodule if needed
-add_custom_command(
-  OUTPUT ${MBEDTLS_CRYPTO_TEST_FILE}
-  COMMAND "${GIT_EXECUTABLE}" submodule update --init crypto
-  WORKING_DIRECTORY "${MBEDTLS_SOURCE_DIR}")
-add_custom_target(mbedtls-submodules DEPENDS "${MBEDTLS_CRYPTO_TEST_FILE}")
+if(WITH_SYSTEM_DEPENDENCIES)
+  # referenced https://github.com/curl/curl/blob/master/CMake/FindMbedTLS.cmake
+  find_path(MBEDTLS_INCLUDE_DIRS mbedtls/ssl.h)
+  find_library(MBEDTLS_LIBRARY mbedtls)
+  find_library(MBEDX509_LIBRARY mbedx509)
+  find_library(MBEDCRYPTO_LIBRARY mbedcrypto)
+  set(MBEDTLS_STATIC_LIBRARIES ${MBEDCRYPTO_LIBRARY} ${MBEDTLS_LIBRARY} ${MBEDX509_LIBRARY})
+  set(MBEDTLS_SHARED_LIBRARIES ${MBEDCRYPTO_LIBRARY} ${MBEDTLS_LIBRARY} ${MBEDX509_LIBRARY})
+
+else()
+  set(MBEDTLS_STATIC_LIBRARIES crypto-static tls-static x509-static)
+  set(MBEDTLS_SHARED_LIBRARIES crypto-shared tls-shared x509-shared)
+
+  # clone git submodule if needed
+  add_custom_command(
+    OUTPUT ${MBEDTLS_CRYPTO_TEST_FILE}
+    COMMAND "${GIT_EXECUTABLE}" submodule update --init crypto
+    WORKING_DIRECTORY "${MBEDTLS_SOURCE_DIR}")
+  add_custom_target(mbedtls-submodules DEPENDS "${MBEDTLS_CRYPTO_TEST_FILE}")
+
+endif()
 
 if(NOT MSVC)
   ### Build Wolfssl ###
@@ -85,11 +100,3 @@ add_library(x509-shared STATIC IMPORTED)
 set_property(TARGET x509-shared PROPERTY IMPORTED_LOCATION ${x509_shared_LIBRARY})
 set_property(TARGET x509-shared PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${mbedtls_INCLUDE_DIR})
 add_dependencies(x509-shared mbedtls-project)
-
-if(WITH_SYSTEM_DEPENDENCIES)
-
-else()
-  set(MBEDTLS_STATIC_LIBRARIES crypto-static tls-static x509-static)
-  set(MBEDTLS_SHARED_LIBRARIES crypto-shared tls-shared x509-shared)
-
-endif()

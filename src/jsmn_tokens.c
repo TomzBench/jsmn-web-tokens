@@ -38,27 +38,6 @@ alg_to_keysize(JSMN_ALG alg)
     }
 }
 
-static int
-b64_sign(
-    char* dst,
-    uint32_t* dlen,
-    const char* src,
-    uint32_t slen,
-    const char* key,
-    uint32_t keylen,
-    JSMN_ALG alg)
-{
-    char hash[512] = { 0 };
-    int err = -1;
-    uint32_t l = 0;
-    err = crypto_sign(hash, src, slen, (byte*)key, keylen, alg);
-    if (!err) {
-        err = crypto_base64uri_encode(
-            dst, *dlen, dlen, hash, alg_to_keysize(alg));
-    }
-    return err;
-}
-
 static inline int
 append_b64(jsmn_token_s* token, const char* buffer, uint32_t len)
 {
@@ -199,17 +178,16 @@ jsmn_token_decode(
     err = 0;
 
     if (!err && secret) {
+        char hash[512] = { 0 };
         char test_sig[1024];
         l = sizeof(test_sig);
-        err = b64_sign(
-            test_sig,
-            &l,
-            head.p,
-            head.len + body.len + 1,
-            secret,
-            slen,
-            t->alg);
-        err = err && sig.len == l && !memcmp(test_sig, sig.p, sig.len) ? -1 : 0;
+        err = crypto_sign(
+            hash, head.p, head.len + body.len + 1, (byte*)secret, slen, t->alg);
+        if (err) goto ERROR;
+        err = crypto_base64uri_encode(
+            test_sig, l, &l, hash, alg_to_keysize(t->alg));
+        if (err) goto ERROR;
+        err = sig.len == l && !memcmp(test_sig, sig.p, sig.len) ? 0 : -1;
     }
 
 ERROR:

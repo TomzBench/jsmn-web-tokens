@@ -92,6 +92,7 @@ crypto_base64uri_encode(
     const char* src,
     uint32_t src_len)
 {
+    // TODO UNSAFE we need to check potential length before encoding
     uint32_t l;
     l = crypto_b64encode(dst, src, src_len);
     *out_len = strlen(dst);           // TODO investigate return length
@@ -108,6 +109,7 @@ crypto_base64uri_decode(
     const char* src,
     uint32_t slen)
 {
+    // TODO unsafe we need to check potential length before decoding
     int err;
     char b[JSMN_MAX_TOKEN_LEN];
     uint32_t l, blen = sizeof(b);

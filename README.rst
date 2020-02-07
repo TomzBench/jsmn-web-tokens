@@ -9,7 +9,7 @@ jsmn-web-tokens
 About
 -----
 
-Small library for creating and decoding `Json Web Tokens<https://jwt.io>`.
+Small library for creating and decoding `Json Web Tokens <https://jwt.io>`_
 
 Docs
 ----
@@ -49,5 +49,5 @@ Example
     jsmn_token_get_claim_str(&token, "sub", &sub);
     jsmn_token_get_claim_str(&token, "name", &name);
     jsmn_token_get_claim_int(&token, "iat", &iat);
-    printf("Hello $.*s!", name.len, name.p);
+    printf("Hello %.*s!", name.len, name.p);
   }

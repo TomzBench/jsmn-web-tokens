@@ -136,6 +136,29 @@ test_jsmn_token_decode_ok(void** context_p)
     }
 }
 
+static void
+test_jsmn_token_decode_fail_sig(void** context_p)
+{
+    jsmn_token_decode_s token;
+    int err;
+
+    err = jsmn_token_decode(
+        &token,
+        UNSAFE_SECRET,      // secret is correct
+        JSMN_ALG_HS512,     // using WRONG algorithm
+        EXPECT_TOKEN_HS256, //
+        strlen(EXPECT_TOKEN_HS256));
+    assert_int_equal(err, -1);
+
+    err = jsmn_token_decode(
+        &token,
+        UNSAFE_SECRET,      // secret is correct
+        JSMN_ALG_HS256,     // using CORRECT algorithm
+        EXPECT_TOKEN_HS256, //
+        strlen(EXPECT_TOKEN_HS256));
+    assert_int_equal(err, 0);
+}
+
 int
 main(int argc, char* argv[])
 {

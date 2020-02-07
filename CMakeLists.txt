@@ -11,11 +11,6 @@ include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 # BOOL OPTIONS
 option(BUILD_SHARED "Whether or not to build the shared object"  ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)
-# option(BUILD_EXAMPLES "Whether or not to build the examples" OFF)
-option(WITH_OPENSSL "Link crypto primatives against openssl" OFF)
-option(WITH_GNUTLS "Link crypto primatives against gnutls" OFF)
-option(WITH_MBEDTLS "Link crypto primatives against mbedtls" ON)
-option(WITH_WOLFSSL "Link crypto primatives against wolfssl" OFF)
 option(WITH_SYSTEM_DEPENDENCIES "Do not build dependencies" OFF)
 option(WITH_JSMN_HEADER_INSTALL "Install the jasmine header" ON)
 
@@ -23,7 +18,10 @@ option(WITH_JSMN_HEADER_INSTALL "Install the jasmine header" ON)
 set(JSMN_MAX_TOKEN_LEN 256 CACHE STRING "Largest token supported")
 set(JSMN_MAX_TOKEN_HEADER_LEN 64 CACHE STRING "Largest token header supported")
 set(JSMN_MAX_TOKENS 64 CACHE STRING "Largest decoded token supported")
-set(JSMN_HEADER_FILE "${CMAKE_SOURCE_DIR}/include/jsmn/jsmn.h" CACHE FILEPATH "")
+set(JSMN_HEADER_FILE "${CMAKE_SOURCE_DIR}/include/jsmn/jsmn.h" 
+  CACHE FILEPATH "Point to jsmn.h header file outside of this repository")
+set(WITH_CRYPTO "MBEDTLS" 
+  CACHE STRING "Select crypto library [MBEDTLS, WOLFSSL, OPENSSL, GNUTLS]")
 
 if(ENABLE_TESTING)
   set(CMAKE_BUILD_TYPE Debug)

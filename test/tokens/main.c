@@ -144,19 +144,19 @@ test_jsmn_token_decode_fail_sig(void** context_p)
 
     err = jsmn_token_decode(
         &token,
-        UNSAFE_SECRET,      // secret is correct
-        JSMN_ALG_HS512,     // using WRONG algorithm
-        EXPECT_TOKEN_HS256, //
-        strlen(EXPECT_TOKEN_HS256));
-    assert_int_equal(err, -1);
+        UNSAFE_SECRET,               // secret is correct
+        JSMN_ALG_HS256,              // using CORRECT algorithm
+        EXPECT_TOKEN_HS256,          //
+        strlen(EXPECT_TOKEN_HS256)); //
+    assert_int_equal(err, 0);        // worky
 
     err = jsmn_token_decode(
         &token,
-        UNSAFE_SECRET,      // secret is correct
-        JSMN_ALG_HS256,     // using CORRECT algorithm
-        EXPECT_TOKEN_HS256, //
-        strlen(EXPECT_TOKEN_HS256));
-    assert_int_equal(err, 0);
+        UNSAFE_SECRET,               // secret is correct
+        JSMN_ALG_HS512,              // using WRONG algorithm
+        EXPECT_TOKEN_HS256,          //
+        strlen(EXPECT_TOKEN_HS256)); //
+    assert_int_equal(err, -1);       // no worky
 }
 
 int

@@ -1,4 +1,5 @@
 set(MBEDTLS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/mbedtls)
+set(MBEDTLS_TEST_FILE ${MBEDTLS_SOURCE_DIR}/CMakeLists.txt)
 set(MBEDTLS_CRYPTO_TEST_FILE ${MBEDTLS_SOURCE_DIR}/crypto/CMakeLists.txt)
 
 if(WITH_SYSTEM_DEPENDENCIES)
@@ -14,12 +15,20 @@ else()
   set(MBEDTLS_STATIC_LIBRARIES crypto-static tls-static x509-static)
   set(MBEDTLS_SHARED_LIBRARIES crypto-shared tls-shared x509-shared)
 
-  # clone git submodule if needed
+  # clone mbedtls
+  add_custom_command(
+    OUTPUT ${MBEDTLS_TEST_FILE}
+    COMMAND "${GIT_EXECUTABLE}" submodule update --init mbedtls
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+  add_custom_target(mbedtls-repository DEPENDS "${MBEDTLS_TEST_FILE}")
+
+  # clone mbedtls/crypto
   add_custom_command(
     OUTPUT ${MBEDTLS_CRYPTO_TEST_FILE}
     COMMAND "${GIT_EXECUTABLE}" submodule update --init crypto
     WORKING_DIRECTORY "${MBEDTLS_SOURCE_DIR}")
   add_custom_target(mbedtls-submodules DEPENDS "${MBEDTLS_CRYPTO_TEST_FILE}")
+  add_dependencies(mbedtls-submodule mbedtls-repository)
 
 endif()
 

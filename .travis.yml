@@ -1,0 +1,12 @@
+language: c
+env:
+        - WITH_MBEDTLS=ON \
+          WITH_SYSTEM_DEPENDENCIES=OFF \
+          ENABLE_TESTING=ON
+
+script:
+        - cmake \
+          -DWITH_MBEDTLS=$WITH_MBEDTLS \
+          -DWITH_SYSTEM_DEPENDENCIES=$WITH_SYSTEM_DEPENDENCIES \
+          -DENABLE_TESTING=$ENABLE_TESTING
+        - cmake --build . --target install

@@ -1,10 +1,10 @@
 jsmn-web-tokens
 ===============
 
-.. image:: https://travis-ci.com/TomzBench/jsmn_web_tokens.svg?branch=master
-    :target: https://travis-ci.com/TomzBench/jsmn_web_tokens
-.. image:: https://codecov.io/gh/TomzBench/jsmn_web_tokens/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/TomzBench/jsmn_web_tokens
+.. image:: https://travis-ci.com/TomzBench/jsmn-web-tokens.svg?branch=master
+    :target: https://travis-ci.com/TomzBench/jsmn-web-tokens
+.. image:: https://codecov.io/gh/TomzBench/jsmn-web-tokens/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/TomzBench/jsmn-web-tokens
 
 About
 -----

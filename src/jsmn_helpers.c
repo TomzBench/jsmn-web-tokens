@@ -74,14 +74,12 @@ jsmn_foreach(
         if (expect_key) {
             get_token(&t[i], data, &key.p, &key.len);
             expect_key = false;
-            i++;
-            continue;
         } else {
             get_token(&t[i], data, &val.p, &val.len);
             expect_key = true;
-            i++;
             cb(ctx, &key, &val);
         }
+        i++;
     }
 }
 

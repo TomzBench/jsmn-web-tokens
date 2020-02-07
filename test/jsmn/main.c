@@ -299,12 +299,10 @@ main(int argc, char* argv[])
     ((void)argc);
     ((void)argv);
     int err;
-    const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_parse_obj),
-        cmocka_unit_test(test_parse_path),
-        cmocka_unit_test(test_parse_about),
-        cmocka_unit_test(test_foreach),
-    };
+    const struct CMUnitTest tests[] = { cmocka_unit_test(test_parse_obj),
+                                        cmocka_unit_test(test_parse_path),
+                                        cmocka_unit_test(test_parse_about),
+                                        cmocka_unit_test(test_foreach) };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);
     return err;

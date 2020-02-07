@@ -78,22 +78,22 @@ jsmn_foreach(
 {
     uint32_t i = 0;
     jsmn_value key, val = { .p = NULL, .len = 0 };
-    bool is_value = false;
+    bool expect_key = true;
     if (is_object(&t[i])) i++;
     while (i < n_tokens) {
         if (is_object(&t[i])) {
             __skip_object(t, n_tokens, i);
-            is_value = false;
+            expect_key = true;
             continue;
         }
-        if (!is_value) {
+        if (expect_key) {
             get_token(&t[i], data, &key.p, &key.len);
-            is_value = true;
+            expect_key = false;
             i++;
             continue;
         } else {
             get_token(&t[i], data, &val.p, &val.len);
-            is_value = false;
+            expect_key = true;
             i++;
             cb(ctx, &key, &val);
         }

@@ -22,21 +22,6 @@ is_object(jsmntok_t* t)
     return t->type == JSMN_OBJECT || t->type == JSMN_ARRAY;
 }
 
-static bool
-is_value(jsmntok_t* t, const char* data, const char** str_p, uint32_t* len)
-{
-    if (!*str_p) {
-        // This is the key name, but not the value. Populate key
-        *str_p = &data[t->start];
-        *len = t->end - t->start;
-        return false;
-    } else {
-        // This token is pointing at the value and previous token is point to
-        // the key
-        return true;
-    }
-}
-
 static void
 get_token(jsmntok_t* t, const char* data, const char** str_p, uint32_t* len)
 {
@@ -125,24 +110,23 @@ jsmn_parse_tokens(
             continue;
         }
         if (expect_key) {
-            get_token(&t[i], data, &tag.p, &tag.len);
             expect_key = false;
-            i++;
-            continue;
+            get_token(&t[i], data, &tag.p, &tag.len);
+        } else {
+            expect_key = true;
+            va_list list;
+            va_start(list, n_tags);
+            count += map_key_to_value(
+                         tag.p,
+                         tag.len,
+                         &data[t[i].start],
+                         t[i].end - t[i].start,
+                         n_tags,
+                         list)
+                         ? 1
+                         : 0;
+            va_end(list);
         }
-        va_list list;
-        va_start(list, n_tags);
-        count += map_key_to_value(
-                     tag.p,
-                     tag.len,
-                     &data[t[i].start],
-                     t[i].end - t[i].start,
-                     n_tags,
-                     list)
-                     ? 1
-                     : 0;
-        va_end(list);
-        expect_key = true;
         i++;
     }
     return count;
@@ -182,30 +166,32 @@ jsmn_parse_tokens_path(
                     // Found the object we are looking for...
                     const char* tag = NULL;
                     uint32_t taglen = 0;
+                    bool expect_key = true;
                     if (is_object(&t[i])) i++;
                     while (i < n_tokens && t[i].end <= t[parent].end) {
                         if (is_object(&t[i])) {
                             __skip_object(t, n_tokens, i);
-                            tag = NULL;
+                            expect_key = true;
                             continue;
                         }
-                        if (!is_value(&t[i], data, &tag, &taglen)) {
-                            i++;
-                            continue;
+                        if (expect_key) {
+                            expect_key = false;
+                            get_token(&t[i], data, &tag, &taglen);
+                        } else {
+                            expect_key = true;
+                            va_list list;
+                            va_start(list, n_tags);
+                            count += map_key_to_value(
+                                         tag,
+                                         taglen,
+                                         &data[t[i].start],
+                                         t[i].end - t[i].start,
+                                         n_tags,
+                                         list)
+                                         ? 1
+                                         : 0;
+                            va_end(list);
                         }
-                        va_list list;
-                        va_start(list, n_tags);
-                        count += map_key_to_value(
-                                     tag,
-                                     taglen,
-                                     &data[t[i].start],
-                                     t[i].end - t[i].start,
-                                     n_tags,
-                                     list)
-                                     ? 1
-                                     : 0;
-                        va_end(list);
-                        tag = NULL;
                         i++;
                     }
                     break;

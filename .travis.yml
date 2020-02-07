@@ -19,9 +19,8 @@ script:
           -DWITH_SYSTEM_DEPENDENCIES=$WITH_SYSTEM_DEPENDENCIES
           -DENABLE_TESTING=$ENABLE_TESTING .
         - cmake --build . --target install
-        - if [ $ENABLE_TESTING ] 
-          then
-          ctest -T memcheck
-          make test-coverage
-          bash <(curl -s https://codecov.io/bash) -f test-coverage.info
+        - if [ $ENABLE_TESTING ]; then
+          ctest -T memcheck &&
+          make test-coverage &&
+          bash <(curl -s https://codecov.io/bash) -f test-coverage.info;
           fi

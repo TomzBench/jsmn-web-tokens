@@ -111,17 +111,29 @@ test_jsmn_token_init_ok(void** context_p)
 static void
 test_jsmn_token_decode_ok(void** context_p)
 {
-    int err;
+    int err, iat, exp;
+    jsmn_value iss, sub;
     jsmn_token_decode_s token;
     JSMN_ALG algs[] = { JSMN_ALG_HS256, JSMN_ALG_HS384, JSMN_ALG_HS512 };
     const char* tokens[] = { EXPECT_TOKEN_HS256,
                              EXPECT_TOKEN_HS384,
                              EXPECT_TOKEN_HS512 };
 
-    err = jsmn_token_decode(&token, algs[0], tokens[0], strlen(tokens[0]));
+    for (int i = 0; i < 3; i++) {
+        err = jsmn_token_decode(
+            &token, UNSAFE_SECRET, algs[i], tokens[i], strlen(tokens[i]));
 
-    assert_int_equal(err, 0);
-    assert_int_equal(token.alg, algs[0]);
+        assert_int_equal(err, 0);
+        assert_int_equal(token.alg, algs[i]);
+        assert_int_equal(jsmn_token_get_claim_str(&token, "iss", &iss), 0);
+        assert_int_equal(jsmn_token_get_claim_str(&token, "sub", &sub), 0);
+        assert_int_equal(jsmn_token_get_claim_int(&token, "iat", &iat), 0);
+        assert_int_equal(jsmn_token_get_claim_int(&token, "exp", &exp), 0);
+        assert_memory_equal(iss.p, UNSAFE_ISS, iss.len);
+        assert_memory_equal(sub.p, UNSAFE_SUB, sub.len);
+        assert_int_equal(iat, UNSAFE_IAT);
+        assert_int_equal(exp, UNSAFE_EXP);
+    }
 }
 
 int

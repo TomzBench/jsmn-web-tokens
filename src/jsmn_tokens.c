@@ -38,6 +38,27 @@ alg_to_keysize(JSMN_ALG alg)
     }
 }
 
+static int
+b64_sign(
+    char* dst,
+    uint32_t* dlen,
+    const char* src,
+    uint32_t slen,
+    const char* key,
+    uint32_t keylen,
+    JSMN_ALG alg)
+{
+    char hash[512] = { 0 };
+    int err = -1;
+    uint32_t l = 0;
+    err = crypto_sign(hash, src, slen, (byte*)key, keylen, alg);
+    if (!err) {
+        err = crypto_base64uri_encode(
+            dst, *dlen, dlen, hash, alg_to_keysize(alg));
+    }
+    return err;
+}
+
 static inline int
 append_b64(jsmn_token_s* token, const char* buffer, uint32_t len)
 {
@@ -98,7 +119,6 @@ int
 jsmn_token_sign(jsmn_token_s* t, const char* key, uint32_t keylen)
 {
     char hash[512] = { 0 };
-    char bhash[1024] = { 0 };
     int err;
     uint32_t l = 0;
 
@@ -117,6 +137,7 @@ ERROR:
 int
 jsmn_token_decode(
     jsmn_token_decode_s* t,
+    const char* secret,
     JSMN_ALG use_alg,
     const char* token,
     uint32_t token_len)
@@ -124,7 +145,7 @@ jsmn_token_decode(
     char b[JSMN_MAX_TOKEN_HEADER_LEN];
     const char* dot;
     int err = -1;
-    uint32_t l;
+    uint32_t l, slen = secret ? strlen(secret) : 0;
     jsmn_value head, body, sig, alg, typ;
     jsmn_parser p;
 
@@ -176,6 +197,82 @@ jsmn_token_decode(
     if (!t->n_body) goto ERROR;
 
     err = 0;
+
+    if (!err && secret) {
+        char test_sig[1024];
+        l = sizeof(test_sig);
+        err = b64_sign(
+            test_sig,
+            &l,
+            head.p,
+            head.len + body.len + 1,
+            secret,
+            slen,
+            t->alg);
+        err = err && sig.len == l && !memcmp(test_sig, sig.p, sig.len) ? -1 : 0;
+    }
+
 ERROR:
     return err;
+}
+
+typedef struct seek_claim_context
+{
+    jsmn_value* find;
+    const char* claim;
+    uint32_t claim_len;
+} seek_claim_context;
+
+static void
+seek_claim(void* context, jsmn_value* key, jsmn_value* val)
+{
+    seek_claim_context* ctx = context;
+    if (key->len == ctx->claim_len && !(memcmp(key->p, ctx->claim, key->len))) {
+        ctx->find->p = val->p;
+        ctx->find->len = val->len;
+    }
+}
+
+int
+jsmn_token_get_claim_str(
+    jsmn_token_decode_s* token,
+    const char* claim,
+    jsmn_value* result)
+{
+    int ret = -1;
+    jsmn_value find = { .p = NULL, .len = 0 };
+    seek_claim_context ctx = { .find = &find,
+                               .claim = claim,
+                               .claim_len = strlen(claim) };
+    result->p = NULL;
+    result->len = 0;
+    jsmn_foreach(token->body, token->n_body, token->json, seek_claim, &ctx);
+    if (find.p) {
+        result->p = find.p;
+        result->len = find.len;
+        ret = 0;
+    }
+    return ret;
+}
+
+int
+jsmn_token_get_claim_int(
+    jsmn_token_decode_s* token,
+    const char* claim,
+    int* result)
+{
+    int ret = -1;
+    char buff[32];
+    jsmn_value find = { .p = NULL, .len = 0 };
+    seek_claim_context ctx = { .find = &find,
+                               .claim = claim,
+                               .claim_len = strlen(claim) };
+    *result = 0;
+    jsmn_foreach(token->body, token->n_body, token->json, seek_claim, &ctx);
+    if (find.p) {
+        snprintf(buff, sizeof(buff), "%.*s", find.len, find.p);
+        *result = atoi(buff);
+        ret = 0;
+    }
+    return ret;
 }

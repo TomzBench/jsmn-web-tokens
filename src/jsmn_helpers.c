@@ -113,6 +113,7 @@ jsmn_parse_tokens(
     jsmn_value tag = { .p = NULL, .len = 0 };
     jsmn_parser p;
     jsmn_init(&p);
+    bool expect_key = true;
     uint32_t count = 0;
     n_tokens = jsmn_parse(&p, data, sz, t, max_tokens);
     if (!(n_tokens <= max_tokens)) return 0;
@@ -120,10 +121,12 @@ jsmn_parse_tokens(
     while (i < n_tokens) {
         if (is_object(&t[i])) {
             __skip_object(t, n_tokens, i);
-            tag.p = NULL;
+            expect_key = true;
             continue;
         }
-        if (!is_value(&t[i], data, &tag.p, &tag.len)) {
+        if (expect_key) {
+            get_token(&t[i], data, &tag.p, &tag.len);
+            expect_key = false;
             i++;
             continue;
         }
@@ -139,7 +142,7 @@ jsmn_parse_tokens(
                      ? 1
                      : 0;
         va_end(list);
-        tag.p = NULL;
+        expect_key = true;
         i++;
     }
     return count;

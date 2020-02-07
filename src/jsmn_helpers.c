@@ -77,7 +77,7 @@ jsmn_foreach(
     void* ctx)
 {
     uint32_t i = 0;
-    jsmn_value key, val = { .p = NULL, .len = 0 };
+    jsmn_value key, val;
     bool expect_key = true;
     if (is_object(&t[i])) i++;
     while (i < n_tokens) {

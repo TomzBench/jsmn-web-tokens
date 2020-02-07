@@ -4,12 +4,12 @@ jsmn-web-tokens
 .. image:: https://travis-ci.com/TomzBench/jsmn_web_tokens.svg?branch=master
     :target: https://travis-ci.com/TomzBench/jsmn_web_tokens
 .. image:: https://codecov.io/gh/TomzBench/jsmn_web_tokens/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/TomzBench/jsmn_web_tokens
+    :target: https://codecov.io/gh/TomzBench/jsmn_web_tokens
 
 About
 -----
 
-Small library for creating and decoding `Json Web Tokens<https://jwt.io>`_.
+Small library for creating and decoding `Json Web Tokens<https://jwt.io>`.
 
 Docs
 ----
@@ -19,7 +19,7 @@ https://tomzbench.github.io/jsmn-web-tokens
 Example
 -------
 
-**Create somee token**
+**Create some token**
 
 .. code-block:: c
   
@@ -27,7 +27,7 @@ Example
 
   err = jsmn_token_init(&token, JSMN_ALG_HS256, "{\"sub\":\"%s\",\"iat\":%d}", "user", time(NULL));
 
-  if (!err) printf("%.*s", jsmn_token_len(&token), jsmn_token(&token));
+  if (!err) printf("%.*s", jsmn_token_len(&token), jsmn_token_str(&token));
 
 **Decode some token**
 
@@ -49,5 +49,5 @@ Example
     jsmn_token_get_claim_str(&token, "sub", &sub);
     jsmn_token_get_claim_str(&token, "name", &name);
     jsmn_token_get_claim_int(&token, "iat", &iat);
-    printf("Hello $.*S!", name.len, name.p);
+    printf("Hello $.*s!", name.len, name.p);
   }

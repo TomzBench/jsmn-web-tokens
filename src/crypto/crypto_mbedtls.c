@@ -1,5 +1,6 @@
 #include "crypto_mbedtls.h"
 #include "base64.h"
+#include "math.h"
 
 static void
 uri_encode(char* str, uint32_t* len)
@@ -92,11 +93,8 @@ crypto_base64uri_encode(
     const char* src,
     uint32_t src_len)
 {
-    // TODO UNSAFE we need to check potential length before encoding
-    uint32_t l;
-    l = crypto_b64encode(dst, src, src_len);
-    *out_len = strlen(dst);           // TODO investigate return length
-    __jsmn_assert(*out_len == l - 1); // (testing if we can use return)
+    if (dst_len < (ceil(src_len / 3) * 4)) return -1;
+    *out_len = crypto_b64encode(dst, src, src_len) - 1;
     uri_encode(dst, out_len);
     return 0;
 }
@@ -109,10 +107,10 @@ crypto_base64uri_decode(
     const char* src,
     uint32_t slen)
 {
-    // TODO unsafe we need to check potential length before decoding
     int err;
     char b[JSMN_MAX_TOKEN_LEN];
     uint32_t l, blen = sizeof(b);
+    if (dlen < (ceil(slen / 3) * 4)) return -1;
     err = b64uri_to_b64(b, &blen, src, slen);
     if (err) goto ERROR;
     b[blen] = 0;

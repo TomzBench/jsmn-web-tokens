@@ -40,6 +40,8 @@ extern "C"
 {
 #endif
 
+    typedef unsigned char byte;
+
 #ifdef __cplusplus
 }
 #endif

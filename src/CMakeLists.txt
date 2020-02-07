@@ -11,12 +11,16 @@ endif()
 
 # source files
 set(SOURCES
+        crypto/base64.c
+        crypto/base64uri.c
 	jsmn_helpers.c
 	jsmn_tokens.c)
 
 # header files
 set(HEADERS
 	${INSTALL_HEADERS}
+        crypto/base64.h
+        crypto/base64uri.h
 	jsmn_helpers.h
 	jsmn_tokens_private.h)
 
@@ -33,8 +37,8 @@ elseif(WITH_MBEDTLS)
   include(../cmake/mbedtls.cmake)
   set(CRYPTO_STATIC_LIBS ${MBEDTLS_STATIC_LIBRARIES})
   set(CRYPTO_SHARED_LIBS ${MBEDTLS_SHARED_LIBRARIES})
-  list(APPEND SOURCES crypto/base64.c crypto/crypto_mbedtls.c)
-  list(APPEND HEADERS crypto/base64.h crypto/crypto.h crypto/crypto_mbedtls.h)
+  list(APPEND SOURCES crypto/crypto_mbedtls.c)
+  list(APPEND HEADERS crypto/crypto.h crypto/crypto_mbedtls.h)
   list(APPEND DEFS "-DWITH_MBEDTLS")
 elseif(WITH_WOLFSSL)
   include(../cmake/wolfssl.cmake)

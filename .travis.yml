@@ -8,7 +8,7 @@ addons:
                 packages:
                         - valgrind
                         - lcov
-                        - openssl-dev
+                        - libssl-dev
 script:
         - cmake
           -DWITH_MBEDTLS=$WITH_MBEDTLS

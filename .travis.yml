@@ -3,6 +3,9 @@ env:
         - WITH_MBEDTLS=ON
           WITH_SYSTEM_DEPENDENCIES=OFF
           ENABLE_TESTING=ON
+        - WITH_OPENSSL=ON
+          WITH_SYSTEM_DEPENDENCIES=ON
+          ENABLE_TESTING=ON
 addons:
         apt:
                 packages:

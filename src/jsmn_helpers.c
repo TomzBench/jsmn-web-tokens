@@ -37,6 +37,13 @@ is_value(jsmntok_t* t, const char* data, const char** str_p, uint32_t* len)
     }
 }
 
+static void
+get_token(jsmntok_t* t, const char* data, const char** str_p, uint32_t* len)
+{
+    *str_p = &data[t->start];
+    *len = t->end - t->start;
+}
+
 static bool
 map_key_to_value(
     const char* key,
@@ -84,8 +91,7 @@ jsmn_foreach(
             i++;
             continue;
         } else {
-            val.p = &data[t[i].start];
-            val.len = t[i].end - t[i].start;
+            get_token(&t[i], data, &val.p, &val.len);
             cb(ctx, &key, &val);
             val.p = NULL;
             i++;

@@ -290,6 +290,7 @@ test_foreach(void** context_p)
     jsmntok_t tokens[20];
     n = jsmn_parse(&p, data, strlen(data), tokens, 20);
     jsmn_foreach(tokens, n, data, test_foreach_callback, &pass);
+    assert_true(pass);
 }
 
 int

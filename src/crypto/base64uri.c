@@ -1,6 +1,12 @@
 #include "base64uri.h"
 #include "base64.h"
-#include "math.h"
+
+static inline uint32_t
+calc_max_b64_estimate(uint32_t sz)
+{
+    uint32_t half = sz >> 1;
+    return sz + half + 2;
+}
 
 static void
 uri_encode(char* str, uint32_t* len)
@@ -49,7 +55,7 @@ crypto_base64uri_encode(
     const char* src,
     uint32_t src_len)
 {
-    if (dst_len < (ceil(src_len / 3) * 4)) return -1;
+    if (dst_len < (calc_max_b64_estimate(src_len))) return -1;
     *out_len = crypto_b64encode(dst, src, src_len) - 1;
     uri_encode(dst, out_len);
     return 0;
@@ -66,7 +72,7 @@ crypto_base64uri_decode(
     int err;
     char b[JSMN_MAX_TOKEN_LEN];
     uint32_t l, blen = sizeof(b);
-    if (dlen < (ceil(slen / 3) * 4)) return -1;
+    if (dlen < (calc_max_b64_estimate(slen))) return -1;
     err = b64uri_to_b64(b, &blen, src, slen);
     if (err) goto ERROR;
     b[blen] = 0;

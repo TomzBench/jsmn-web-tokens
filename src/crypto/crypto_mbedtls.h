@@ -13,8 +13,6 @@ extern "C"
 {
 #endif
 
-    typedef unsigned char byte;
-
     int crypto_base64uri_encode(
         char* dst,
         uint32_t dst_len,

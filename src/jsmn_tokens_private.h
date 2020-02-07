@@ -35,6 +35,8 @@
 
 #include "jsmn/jsmn_tokens.h"
 
+typedef unsigned char byte;
+
 #ifdef __cplusplus
 extern "C"
 {

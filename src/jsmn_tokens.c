@@ -121,12 +121,12 @@ jsmn_token_decode(
     const char* token,
     uint32_t token_len)
 {
-    // TODO investigate why when buffer is here it is currupted
     char b[JSMN_MAX_TOKEN_HEADER_LEN];
     const char* dot;
-    int err = -1, count;
+    int err = -1;
     uint32_t l;
     jsmn_value head, body, sig, alg, typ;
+    jsmn_parser p;
 
     memset(t, 0, sizeof(jsmn_token_decode_s));
 
@@ -150,7 +150,7 @@ jsmn_token_decode(
     if (err) goto ERROR;
 
     // clang-format off
-    count = jsmn_parse_tokens(
+    t->n_head = jsmn_parse_tokens(
         t->head,
         JSMN_MAX_HEADER_TOKENS,
         b,
@@ -159,13 +159,21 @@ jsmn_token_decode(
         "alg", &alg,
         "typ", &typ);
     // clang-format on
+    t->alg = str_to_alg(alg.p, alg.len);
 
     err = -1;
-    if (!(count >= 2)) goto ERROR;
+    if (!(t->n_head >= 2)) goto ERROR;
     if (!(typ.len == 3)) goto ERROR;
+    if (!(t->alg == use_alg)) goto ERROR;
     if (memcmp(typ.p, "JWT", typ.len)) goto ERROR;
 
-    t->alg = str_to_alg(alg.p, alg.len);
+    err = crypto_base64uri_decode(
+        t->json, sizeof(t->json), &t->json_len, body.p, body.len);
+    if (err) goto ERROR;
+
+    jsmn_init(&p);
+    t->n_body = jsmn_parse(&p, t->json, t->json_len, t->body, JSMN_MAX_TOKENS);
+    if (!t->n_body) goto ERROR;
 
     err = 0;
 ERROR:

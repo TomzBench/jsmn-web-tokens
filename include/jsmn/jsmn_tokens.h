@@ -67,7 +67,10 @@ extern "C"
         JSMN_ALG alg;
         jsmntok_t head[JSMN_MAX_HEADER_TOKENS];
         jsmntok_t body[JSMN_MAX_TOKENS];
-        char b[JSMN_MAX_TOKEN_LEN];
+        uint32_t n_head;
+        uint32_t n_body;
+        uint32_t json_len;
+        char json[JSMN_MAX_TOKEN_LEN];
     } jsmn_token_decode_s;
 
     int jsmn_token_init(jsmn_token_s* t, JSMN_ALG alg, const char* claims, ...);

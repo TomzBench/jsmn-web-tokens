@@ -16,6 +16,7 @@ script:
         - cmake
           -DCMAKE_INSTALL_PREFIX=./build/install
           -DWITH_MBEDTLS=$WITH_MBEDTLS
+          -DWITH_OPENSSL=$WITH_OPENSSL
           -DWITH_SYSTEM_DEPENDENCIES=$WITH_SYSTEM_DEPENDENCIES
           -DENABLE_TESTING=$ENABLE_TESTING .
         - cmake --build . --target install

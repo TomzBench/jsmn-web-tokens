@@ -13,9 +13,8 @@ alg_to_str(JSMN_ALG alg)
 }
 
 static JSMN_ALG
-str_to_alg(const char* str)
+str_to_alg(const char* str, uint32_t len)
 {
-    uint32_t len = strlen(str);
     JSMN_ALG alg = JSMN_ALG_ERROR;
     if (len == 5) {
         for (int i = 0; i < JSMN_ALG_COUNT; i++) {
@@ -161,8 +160,14 @@ jsmn_token_decode(
         "typ", &typ);
     // clang-format on
 
+    err = -1;
     if (!(count >= 2)) goto ERROR;
+    if (!(typ.len == 3)) goto ERROR;
+    if (memcmp(typ.p, "JWT", typ.len)) goto ERROR;
 
+    t->alg = str_to_alg(alg.p, alg.len);
+
+    err = 0;
 ERROR:
-    return -1;
+    return err;
 }

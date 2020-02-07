@@ -119,6 +119,9 @@ test_jsmn_token_decode_ok(void** context_p)
                              EXPECT_TOKEN_HS512 };
 
     err = jsmn_token_decode(&token, algs[0], tokens[0], strlen(tokens[0]));
+
+    assert_int_equal(err, 0);
+    assert_int_equal(token.alg, algs[0]);
 }
 
 int

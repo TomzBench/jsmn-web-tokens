@@ -255,6 +255,7 @@ main(int argc, char* argv[])
     int err;
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_jsmn_token_init_ok),
+        cmocka_unit_test(test_jsmn_token_decode_ok),
         cmocka_unit_test(test_jsmn_token_decode_fail_sig),
         cmocka_unit_test(test_jsmn_token_decode_fail_too_long),
     };

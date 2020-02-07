@@ -8,6 +8,8 @@
 #elif defined(WITH_WOLFSSL)
 #endif
 
+#include "base64uri.h"
+
 #ifdef __cplusplus
 extern "C"
 {

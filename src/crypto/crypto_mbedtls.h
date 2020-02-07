@@ -13,27 +13,6 @@ extern "C"
 {
 #endif
 
-    int crypto_base64uri_encode(
-        char* dst,
-        uint32_t dst_len,
-        uint32_t* out_len,
-        const char* src,
-        uint32_t src_len);
-
-    int crypto_base64_decode(
-        char* dst,
-        uint32_t dst_len,
-        uint32_t* out_len,
-        const char* src,
-        uint32_t src_len);
-
-    int crypto_base64uri_decode(
-        char* dst,
-        uint32_t dst_len,
-        uint32_t* out_len,
-        const char* src,
-        uint32_t src_len);
-
     int crypto_sign(
         char* dst,
         const char* p,

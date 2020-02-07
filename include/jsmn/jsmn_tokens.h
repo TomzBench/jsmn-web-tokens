@@ -90,7 +90,7 @@ extern "C"
         const char* claim,
         int* result);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 #endif

@@ -61,6 +61,38 @@ map_key_to_value(
     return false;
 }
 
+void
+jsmn_foreach(
+    jsmntok_t* t,
+    uint32_t n_tokens,
+    const char* data,
+    void (*cb)(void*, jsmn_value* key, jsmn_value* val),
+    void* ctx)
+{
+    uint32_t i = 0;
+    jsmn_value key, val = { .p = NULL, .len = 0 };
+    if (is_object(&t[i])) i++;
+    while (i < n_tokens) {
+        if (is_object(&t[i])) {
+            __skip_object(t, n_tokens, i);
+            val.p = NULL;
+            continue;
+        }
+        if (!is_value(&t[i], data, &val.p, &val.len)) {
+            key.p = val.p;
+            key.len = val.len;
+            i++;
+            continue;
+        } else {
+            val.p = &data[t[i].start];
+            val.len = t[i].end - t[i].start;
+            cb(ctx, &key, &val);
+            val.p = NULL;
+            i++;
+        }
+    }
+}
+
 uint32_t
 jsmn_parse_tokens(
     jsmntok_t* t,

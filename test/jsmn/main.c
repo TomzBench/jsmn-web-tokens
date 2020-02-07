@@ -258,6 +258,40 @@ test_parse_about(void** context_p)
     assert_int_equal(count, 6);
 }
 
+static void
+test_foreach_callback(void* pass, jsmn_value* key, jsmn_value* value)
+{
+    static int count = 1;
+    if (count == 1) {
+        assert_int_equal(key->len, 3);
+        assert_memory_equal(key->p, "one", 3);
+        count++;
+    } else if (count == 2) {
+        assert_int_equal(key->len, 3);
+        assert_memory_equal(key->p, "two", 3);
+        count++;
+    } else {
+        assert_int_equal(key->len, 5);
+        assert_memory_equal(key->p, "three", 5);
+        count = 0;
+        *(bool*)pass = true;
+    }
+}
+
+static void
+test_foreach(void** context_p)
+{
+    ((void)context_p);
+    bool pass = false;
+    uint32_t n;
+    const char* data = "{\"one\":1,\"haha\":{},\"two\":2,\"three\":3}";
+    jsmn_parser p;
+    jsmn_init(&p);
+    jsmntok_t tokens[20];
+    n = jsmn_parse(&p, data, strlen(data), tokens, 20);
+    jsmn_foreach(tokens, n, data, test_foreach_callback, &pass);
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -268,6 +302,7 @@ main(int argc, char* argv[])
         cmocka_unit_test(test_parse_obj),
         cmocka_unit_test(test_parse_path),
         cmocka_unit_test(test_parse_about),
+        cmocka_unit_test(test_foreach),
     };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);

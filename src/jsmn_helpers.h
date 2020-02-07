@@ -14,6 +14,13 @@ extern "C"
 
 #define jsmn_helper(x) jsmntok_t[x]
 
+    void jsmn_foreach(
+        jsmntok_t* t,
+        uint32_t n_tokens,
+        const char* data,
+        void (*cb)(void*, jsmn_value* key, jsmn_value* val),
+        void*);
+
     uint32_t jsmn_parse_tokens(
         jsmntok_t*,
         uint32_t sz,

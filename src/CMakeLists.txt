@@ -77,7 +77,9 @@ if(BUILD_SHARED)
   target_include_directories(jsmn_tokens_shared PRIVATE ./)
   target_compile_definitions(jsmn_tokens_shared PRIVATE ${DEFS})
   target_compile_definitions(jsmn_tokens_shared PUBLIC ${PUBDEFS})
-  set_target_properties(jsmn_tokens_shared PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
+  set_target_properties(jsmn_tokens_shared PROPERTIES
+    PUBLIC_HEADER "${INSTALL_HEADERS}"
+    OUTPUT_NAME jsmn-web-tokens)
   if(INCS)
     target_include_directories(jsmn_tokens_shared PUBLIC ${INCS})
   endif()
@@ -94,7 +96,9 @@ if(BUILD_STATIC)
   target_include_directories(jsmn_tokens_static PRIVATE ./)
   target_compile_definitions(jsmn_tokens_static PRIVATE ${DEFS})
   target_compile_definitions(jsmn_tokens_static PUBLIC ${PUBDEFS})
-  set_target_properties(jsmn_tokens_static PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
+  set_target_properties(jsmn_tokens_static PROPERTIES
+    PUBLIC_HEADER "${INSTALL_HEADERS}"
+    OUTPUT_NAME jsmn-web-tokens)
   if(INCS)
     target_include_directories(jsmn_tokens_static PUBLIC ${INCS})
   endif()

@@ -1,7 +1,7 @@
 #ifndef CRYPTO_OPENSSL_H
 #define CRYPTO_OPENSSL_H
 
-#include "jsmn_tokens_private.h"
+#include "jsmn/jsmn_helpers.h"
 
 #include <openssl/bio.h>
 #include <openssl/buffer.h>

@@ -1,6 +1,5 @@
 #include "crypto/crypto.h"
 #include "jsmn/jsmn_helpers.h"
-#include "jsmn_tokens_private.h"
 
 static const char* alg_strings[JSMN_ALG_COUNT] = { "HS256", "HS384", "HS512" };
 

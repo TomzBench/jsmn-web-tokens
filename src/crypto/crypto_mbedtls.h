@@ -1,7 +1,7 @@
 #ifndef CRYPTO_MBEDTLS_H
 #define CRYPTO_MBEDTLS_H
 
-#include "jsmn_tokens_private.h"
+#include "jsmn/jsmn_helpers.h"
 
 #include "mbedtls/md.h"
 #include "mbedtls/sha1.h"

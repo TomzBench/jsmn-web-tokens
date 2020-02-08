@@ -19,8 +19,7 @@ set(SOURCES
 set(HEADERS
 	${INSTALL_HEADERS}
         crypto/base64.h
-        crypto/base64uri.h
-	jsmn_tokens_private.h)
+        crypto/base64uri.h)
 
 list(APPEND DEFS "-DJSMN_MAX_TOKEN_LEN=${JSMN_MAX_TOKEN_LEN}")
 list(APPEND DEFS "-DJSMN_MAX_TOKEN_HEADER_LEN=${JSMN_MAX_TOKEN_HEADER_LEN}")

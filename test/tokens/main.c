@@ -1,5 +1,5 @@
 #include "jsmn/jsmn_tokens.h"
-#include "jsmn_helpers.h"
+#include "jsmn/jsmn_helpers.h"
 
 #include <setjmp.h>
 

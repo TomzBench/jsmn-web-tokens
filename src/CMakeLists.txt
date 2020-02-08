@@ -3,6 +3,7 @@
 # install headers
 set(INCLUDE_DIRECTORY ../include)
 list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_tokens.h)
+list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_helpers.h)
 if(WITH_JSMN_HEADER_INSTALL)
   list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn.h)
 endif()
@@ -19,7 +20,6 @@ set(HEADERS
 	${INSTALL_HEADERS}
         crypto/base64.h
         crypto/base64uri.h
-	jsmn_helpers.h
 	jsmn_tokens_private.h)
 
 list(APPEND DEFS "-DJSMN_MAX_TOKEN_LEN=${JSMN_MAX_TOKEN_LEN}")

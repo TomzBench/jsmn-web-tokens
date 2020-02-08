@@ -1,6 +1,6 @@
 #include "jsmn/jsmn.h"
 
-#include "jsmn_helpers.h"
+#include "jsmn/jsmn_helpers.h"
 
 #define __seek_slash(__bytes, __len, __result)                                 \
     do {                                                                       \

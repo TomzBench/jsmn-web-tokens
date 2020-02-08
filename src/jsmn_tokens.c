@@ -113,6 +113,18 @@ ERROR:
     return err;
 }
 
+uint32_t
+jsmn_token_len(jsmn_token_s* t)
+{
+    return t->len;
+}
+
+const char*
+jsmn_token_data(jsmn_token_s* t)
+{
+    return t->b;
+}
+
 int
 jsmn_token_decode(
     jsmn_token_decode_s* t,

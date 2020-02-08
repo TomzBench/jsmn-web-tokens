@@ -75,6 +75,8 @@ extern "C"
 
     int jsmn_token_init(jsmn_token_s* t, JSMN_ALG alg, const char* claims, ...);
     int jsmn_token_sign(jsmn_token_s* t, const char* secret, uint32_t slen);
+    uint32_t jsmn_token_len(jsmn_token_s* t);
+    const char* jsmn_token_data(jsmn_token_s* t);
     int jsmn_token_decode(
         jsmn_token_decode_s*,
         const char* secret,

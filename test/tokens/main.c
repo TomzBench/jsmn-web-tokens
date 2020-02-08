@@ -148,7 +148,7 @@ test_jsmn_token_init_ok(void** context_p)
     ((void)context_p);
 
     int err;
-    jsmn_token_s token;
+    jsmn_token_s t;
     JSMN_ALG algs[] = { JSMN_ALG_HS256, JSMN_ALG_HS384, JSMN_ALG_HS512 };
     const char* payloads[] = { EXPECT_HEADER_HS256 "." EXPECT_PAYLOAD_HS256,
                                EXPECT_HEADER_HS384 "." EXPECT_PAYLOAD_HS384,
@@ -160,7 +160,7 @@ test_jsmn_token_init_ok(void** context_p)
     for (int i = 0; i < 3; i++) {
 
         err = jsmn_token_init(
-            &token,
+            &t,
             algs[i],
             PAYLOAD_FMT_STR,
             UNSAFE_ISS,
@@ -170,14 +170,14 @@ test_jsmn_token_init_ok(void** context_p)
 
         // Verify header + payload
         assert_int_equal(err, 0);
-        assert_int_equal(strlen(payloads[i]), token.len);
-        assert_memory_equal(payloads[i], token.b, token.len);
+        assert_int_equal(strlen(payloads[i]), t.len);
+        assert_memory_equal(payloads[i], t.b, t.len);
 
         // Verify signature
-        err = jsmn_token_sign(&token, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
+        err = jsmn_token_sign(&t, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
         assert_int_equal(err, 0);
-        assert_int_equal(strlen(tokens[i]), token.len);
-        assert_memory_equal(tokens[i], token.b, token.len);
+        assert_int_equal(strlen(tokens[i]), t.len);
+        assert_memory_equal(tokens[i], jsmn_token_data(&t), jsmn_token_len(&t));
     }
 }
 

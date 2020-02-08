@@ -23,9 +23,12 @@ Example
 
 .. code-block:: c
   
-  int err, jsmn_token_s token;
+  int err; 
+  jsmn_token_s token;
 
   err = jsmn_token_init(&token, JSMN_ALG_HS256, "{\"sub\":\"%s\",\"iat\":%d}", "user", time(NULL));
+
+  if (!err) err = jsmn_token_sign(&token, "secret", strlen("secret"));
 
   if (!err) printf("%.*s", jsmn_token_len(&token), jsmn_token_str(&token));
 

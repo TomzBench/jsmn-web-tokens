@@ -26,11 +26,17 @@ Example
   int err; 
   jsmn_token_s token;
 
+  // Create token
   err = jsmn_token_init(&token, JSMN_ALG_HS256, "{\"sub\":\"%s\",\"iat\":%d}", "user", time(NULL));
 
-  if (!err) err = jsmn_token_sign(&token, "secret", strlen("secret"));
+  if (!err) {
+    // Sign token
+    err = jsmn_token_sign(&token, "secret", strlen("secret"));
 
-  if (!err) printf("%.*s", jsmn_token_len(&token), jsmn_token_str(&token));
+    // Get token
+    if (!err) printf("%.*s", jsmn_token_len(&token), jsmn_token_str(&token));
+  }
+
 
 **Decode some token**
 
@@ -44,11 +50,14 @@ Example
   int err;
   jsmn_token_decode_s token;
 
+  // Decode and validate token
   err = jsmn_token_decode(&token, "your-256-bit-secret", JSMN_ALG_HS256, t, strlen(t));
 
   if (!err) {
     jsmn_value sub, name;
     int iat;
+
+    // Read claims
     jsmn_token_get_claim_str(&token, "sub", &sub);
     jsmn_token_get_claim_str(&token, "name", &name);
     jsmn_token_get_claim_int(&token, "iat", &iat);

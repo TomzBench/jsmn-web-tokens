@@ -1,12 +1,10 @@
 # jsmn_tokens
 
-message(STATUS "JSMN_HEADER_FILE: ${JSMN_HEADER_FILE}")
-
 # install headers
 set(INCLUDE_DIRECTORY ../include)
 list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_tokens.h)
 if(WITH_JSMN_HEADER_INSTALL)
-  list(APPEND INSTALL_HEADERS ${JSMN_HEADER_FILE})
+  list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn.h)
 endif()
 
 # source files
@@ -27,7 +25,6 @@ set(HEADERS
 list(APPEND DEFS "-DJSMN_MAX_TOKEN_LEN=${JSMN_MAX_TOKEN_LEN}")
 list(APPEND DEFS "-DJSMN_MAX_TOKEN_HEADER_LEN=${JSMN_MAX_TOKEN_HEADER_LEN}")
 list(APPEND DEFS "-DJSMN_MAX_TOKENS=${JSMN_MAX_TOKENS}")
-list(APPEND PUBDEFS "-DJSMN_HEADER_FILE=\"${JSMN_HEADER_FILE}\"")
 list(APPEND INCS "${INCLUDE_DIRECTORY} ./")
 
 if (${WITH_CRYPTO} STREQUAL OPENSSL)
@@ -63,7 +60,6 @@ if(ENABLE_TESTING)
   target_include_directories(jsmn_tokens_testing PUBLIC "${INCLUDE_DIRECTORY}")
   target_include_directories(jsmn_tokens_testing PUBLIC ./)
   target_compile_definitions(jsmn_tokens_testing PUBLIC ${DEFS})
-  target_compile_definitions(jsmn_tokens_testing PUBLIC ${PUBDEFS})
   set_target_properties(jsmn_tokens_testing PROPERTIES PUBLIC_HEADER "${INSTALL_HEADERS}")
   if(INCS)
     target_include_directories(jsmn_tokens_testing PUBLIC ${INCS})
@@ -76,7 +72,6 @@ if(BUILD_SHARED)
   target_include_directories(jsmn_tokens_shared PUBLIC ${INCLUDE_DIRECTORY})
   target_include_directories(jsmn_tokens_shared PRIVATE ./)
   target_compile_definitions(jsmn_tokens_shared PRIVATE ${DEFS})
-  target_compile_definitions(jsmn_tokens_shared PUBLIC ${PUBDEFS})
   set_target_properties(jsmn_tokens_shared PROPERTIES
     PUBLIC_HEADER "${INSTALL_HEADERS}"
     OUTPUT_NAME jsmn-web-tokens)
@@ -95,7 +90,6 @@ if(BUILD_STATIC)
   target_include_directories(jsmn_tokens_static PUBLIC ${INCLUDE_DIRECTORY})
   target_include_directories(jsmn_tokens_static PRIVATE ./)
   target_compile_definitions(jsmn_tokens_static PRIVATE ${DEFS})
-  target_compile_definitions(jsmn_tokens_static PUBLIC ${PUBDEFS})
   set_target_properties(jsmn_tokens_static PROPERTIES
     PUBLIC_HEADER "${INSTALL_HEADERS}"
     OUTPUT_NAME jsmn-web-tokens)

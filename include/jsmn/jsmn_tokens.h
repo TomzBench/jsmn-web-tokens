@@ -21,7 +21,7 @@
 #endif
 
 #define JSMN_HEADER
-#include JSMN_HEADER_FILE
+#include "jsmn.h"
 
 #ifdef __cplusplus
 extern "C"

@@ -38,7 +38,7 @@ alg_to_keysize(JSMN_ALG alg)
 }
 
 static inline int
-append_b64(jsmn_token_s* token, const char* buffer, uint32_t len)
+append_b64(jsmn_token_encode_s* token, const char* buffer, uint32_t len)
 {
     int err;
     uint32_t newlen;
@@ -53,20 +53,24 @@ append_b64(jsmn_token_s* token, const char* buffer, uint32_t len)
 }
 
 static inline void
-append_dot(jsmn_token_s* token)
+append_dot(jsmn_token_encode_s* token)
 {
     __jsmn_assert(token->len < sizeof(token->b));
     token->b[token->len++] = '.';
 }
 
 int
-jsmn_token_init(jsmn_token_s* token, JSMN_ALG alg, const char* claims, ...)
+jsmn_token_init(
+    jsmn_token_encode_s* token,
+    JSMN_ALG alg,
+    const char* claims,
+    ...)
 {
     int err = -1;
     char buffer[JSMN_MAX_TOKEN_LEN];
     va_list list;
 
-    memset(token, 0, sizeof(jsmn_token_s));
+    memset(token, 0, sizeof(jsmn_token_encode_s));
     token->alg = alg;
 
     // print the header
@@ -94,7 +98,7 @@ ERROR:
 }
 
 int
-jsmn_token_sign(jsmn_token_s* t, const char* key, uint32_t keylen)
+jsmn_token_sign(jsmn_token_encode_s* t, const char* key, uint32_t keylen)
 {
     char hash[512] = { 0 };
     int err;
@@ -113,13 +117,13 @@ ERROR:
 }
 
 uint32_t
-jsmn_token_len(jsmn_token_s* t)
+jsmn_token_len(jsmn_token_encode_s* t)
 {
     return t->len;
 }
 
 const char*
-jsmn_token_data(jsmn_token_s* t)
+jsmn_token_data(jsmn_token_encode_s* t)
 {
     return t->b;
 }

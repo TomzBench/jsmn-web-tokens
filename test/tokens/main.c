@@ -1,5 +1,5 @@
-#include "jsmn/jsmn_tokens.h"
 #include "jsmn/jsmn_helpers.h"
+#include "jsmn/jsmn_tokens.h"
 
 #include <setjmp.h>
 
@@ -148,7 +148,7 @@ test_jsmn_token_init_ok(void** context_p)
     ((void)context_p);
 
     int err;
-    jsmn_token_s t;
+    jsmn_token_encode_s t;
     JSMN_ALG algs[] = { JSMN_ALG_HS256, JSMN_ALG_HS384, JSMN_ALG_HS512 };
     const char* payloads[] = { EXPECT_HEADER_HS256 "." EXPECT_PAYLOAD_HS256,
                                EXPECT_HEADER_HS384 "." EXPECT_PAYLOAD_HS384,

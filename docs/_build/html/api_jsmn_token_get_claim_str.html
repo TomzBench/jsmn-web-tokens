@@ -339,9 +339,9 @@
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p><strong>Read the “Subject”, “Name”, and “Issued at” claims of a JWT</strong></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">jwt</span> <span class="o">=</span> \
-<span class="n">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span><span class="p">.</span>\
-<span class="n">eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ</span><span class="p">.</span>\
-<span class="n">SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</span><span class="p">;</span>
+   <span class="s">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."</span>\
+   <span class="s">"eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ."</span>\
+   <span class="s">"SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"</span><span class="p">;</span>
 
 <span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
 <span class="n">jsmn_token_decode_s</span> <span class="n">token</span><span class="p">;</span>

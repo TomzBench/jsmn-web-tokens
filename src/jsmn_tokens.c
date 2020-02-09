@@ -148,20 +148,16 @@ jsmn_token_decode(
     // populate head
     head.p = token;
     dot = memchr(token, '.', token_len);
-    if (!dot) goto ERROR;
-    head.len = dot - head.p;
+    if (!(dot && (head.len = dot - head.p))) goto ERROR;
 
     // populate body
     body.p = ++dot;
     dot = memchr(dot, '.', &token[token_len] - dot);
-    if (!dot) goto ERROR;
-    body.len = dot - body.p;
+    if (!(dot && (body.len = dot - body.p))) goto ERROR;
 
     // populate sig
     sig.p = ++dot;
-    sig.len = token_len - head.len - body.len - 2;
-
-    if (!(head.len && body.len && sig.len)) goto ERROR;
+    if (!(sig.len = token_len - head.len - body.len - 2)) goto ERROR;
 
     err = crypto_base64uri_decode(b, sizeof(b), &l, head.p, head.len);
     if (err) goto ERROR;

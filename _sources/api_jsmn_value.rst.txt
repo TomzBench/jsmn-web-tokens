@@ -31,9 +31,9 @@ Examples
 .. code-block:: c
 
    const char *jwt = \
-   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.\ 
-   eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.\
-   SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c;
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."\ 
+      "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ."\
+      "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
    jsmn_token_decode_s token;
    err = jsmn_token_decode(&token, "your-256-bit-secret", JSMN_ALG_HS256, jwt, strlen(jwt));

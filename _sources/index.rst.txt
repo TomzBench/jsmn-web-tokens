@@ -10,6 +10,14 @@
      :scale: 150%
      :align: center
 
+.. code-block:: c
+
+  // Create token
+  jsmn_token_init(&token, JSMN_ALG_HS256, "{\"sub\":\"%s\",\"iat\":%d}", "user", time(NULL));
+
+  // Decode and validate token
+  jsmn_token_decode(&token, "your-256-bit-secret", JSMN_ALG_HS256, jwt, strlen(jwt));
+
 
 About
 =====
@@ -96,49 +104,58 @@ Examples
 
 .. code-block:: c
   
-  int err; 
-  jsmn_token_s token;
+   int err; 
+   jsmn_token_encode_s token;
 
-  // Create token
-  err = jsmn_token_init(&token, JSMN_ALG_HS256, "{\"sub\":\"%s\",\"iat\":%d}", "user", time(NULL));
+   // Create token
+   err = jsmn_token_init(&token, JSMN_ALG_HS256, "{\"sub\":\"%s\",\"iat\":%d}", "user", time(NULL));
 
-  if (!err) {
-    // Sign token
-    err = jsmn_token_sign(&token, "secret", strlen("secret"));
+   if (!err) {
+     // Sign token
+     err = jsmn_token_sign(&token, "secret", strlen("secret"));
 
-    // Get token
-    if (!err) printf("%.*s", jsmn_token_len(&token), jsmn_token_str(&token));
-  }
+     // Get token
+     if (!err) printf("%.*s", jsmn_token_len(&token), jsmn_token_str(&token));
+   }
 
 
 **Decode some token**
 
 .. code-block:: c
   
-  const char *token = \
-  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.\ 
-  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.\
-  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c;
+   const char *jwt = \
+   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.\ 
+   eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.\
+   SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c;
 
-  int err;
-  jsmn_token_decode_s token;
+   int err;
+   jsmn_token_decode_s token;
 
-  // Decode and validate token
-  err = jsmn_token_decode(&token, "your-256-bit-secret", JSMN_ALG_HS256, t, strlen(t));
+   // Decode and validate token
+   err = jsmn_token_decode(&token, "your-256-bit-secret", JSMN_ALG_HS256, jwt, strlen(jwt));
 
-  if (!err) {
-    jsmn_value sub, name;
-    int iat;
+   if (!err) {
+     jsmn_value sub, name;
+     int iat;
 
-    // Read claims
-    jsmn_token_get_claim_str(&token, "sub", &sub);
-    jsmn_token_get_claim_str(&token, "name", &name);
-    jsmn_token_get_claim_int(&token, "iat", &iat);
-    printf("Hello %.*s!", name.len, name.p);
-  }
+     // Read claims
+     jsmn_token_get_claim_str(&token, "sub", &sub);
+     jsmn_token_get_claim_str(&token, "name", &name);
+     jsmn_token_get_claim_int(&token, "iat", &iat);
+     printf("Hello %.*s!", name.len, name.p);
+   }
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :caption: API
 
-* :ref:`modindex`
+   api_jsmn_alg.rst
+   api_jsmn_value.rst
+   api_jsmn_token_encode_s.rst
+   api_jsmn_token_decode_s.rst
+   api_jsmn_token_init.rst
+   api_jsmn_token_sign.rst
+   api_jsmn_token_decode.rst
+   api_jsmn_token_get_claim_int.rst
+   api_jsmn_token_get_claim_str.rst

@@ -1,0 +1,33 @@
+.. _ref_api_jsmn_token_decode_s:
+
+jsmn_token_decode_s
+===================
+
+Synopsis
+--------
+
+.. code-block:: c
+
+   typedef struct jsmn_token_decode_s;
+
+A "decoder" context used to decode a JSON web token string. Initialize a jsmn_token_decode_s context with :ref:`ref_api_jsmn_token_decode`.
+
+Examples
+--------
+
+.. rubric:: See Also
+
+.. code-block:: c
+  
+   const char *jwt = \
+   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.\ 
+   eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.\
+   SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c;
+
+   int err;
+   jsmn_token_decode_s token;
+
+   // Decode and validate token
+   err = jsmn_token_decode(&token, "your-256-bit-secret", JSMN_ALG_HS256, jwt, strlen(jwt));
+
+1. :ref:`ref_api_jsmn_token_decode`

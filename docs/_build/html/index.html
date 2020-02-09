@@ -57,7 +57,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>About &#8212; jsmn-web-tokens 0.0.1 documentation</title>
+    <title>Jasmine Web Tokens &#8212; jsmn-web-tokens 0.0.1 documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/styles.css" />
@@ -113,8 +113,8 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">jsmn-web-tokens User Guide</span>
-          <span class="md-header-nav__topic"> About </span>
+          <span class="md-header-nav__topic">Jasmine Web Tokens User Guide</span>
+          <span class="md-header-nav__topic"> Jasmine Web Tokens </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -169,7 +169,7 @@
       
     </a>
     <a href="#"
-       title="jsmn-web-tokens 0.0.1 documentation">jsmn-web-tokens User Guide</a>
+       title="jsmn-web-tokens 0.0.1 documentation">Jasmine Web Tokens User Guide</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/tomzbench/jsmn-web-tokens/" title="Go to repository" class="md-source" data-md-source="github">
@@ -252,13 +252,17 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">About</a>
+        <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">Jasmine Web Tokens</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#about" class="md-nav__link">About</a>
         </li>
         <li class="md-nav__item"><a href="#getting-started" class="md-nav__link">Getting Started</a>
         </li>
         <li class="md-nav__item"><a href="#configuration-options" class="md-nav__link">Configuration Options</a>
         </li>
         <li class="md-nav__item"><a href="#examples" class="md-nav__link">Examples</a>
+        </li></ul>
+            </nav>
         </li>
     
 <li class="md-nav__item"><a class="md-nav__extra_link" href="_sources/index.rst.txt">Show Source</a> </li>
@@ -278,6 +282,8 @@
 <a class="reference internal image-reference" href="_images/jwt.svg"><div align="center" class="align-center"><img alt="_images/jwt.svg" src="_images/jwt.svg"/></div>
 </a>
 </div>
+
+<h1 id="index--page-root">Jasmine Web Tokens<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create token</span>
 <span class="n">jsmn_token_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">token</span><span class="p">,</span> <span class="n">JSMN_ALG_HS256</span><span class="p">,</span> <span class="s">"{</span><span class="se">\"</span><span class="s">sub</span><span class="se">\"</span><span class="s">:</span><span class="se">\"</span><span class="s">%s</span><span class="se">\"</span><span class="s">,</span><span class="se">\"</span><span class="s">iat</span><span class="se">\"</span><span class="s">:%d}"</span><span class="p">,</span> <span class="s">"user"</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
 
@@ -285,14 +291,14 @@
 <span class="n">jsmn_token_decode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">token</span><span class="p">,</span> <span class="s">"your-256-bit-secret"</span><span class="p">,</span> <span class="n">JSMN_ALG_HS256</span><span class="p">,</span> <span class="n">jwt</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">jwt</span><span class="p">));</span>
 </pre></div>
 </div>
-
-<h1 id="index--page-root">About<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://travis-ci.com/TomzBench/jsmn-web-tokens"><img alt="https://travis-ci.com/TomzBench/jsmn-web-tokens.svg?branch=master" src="https://travis-ci.com/TomzBench/jsmn-web-tokens.svg?branch=master"/></a>
 <a class="reference external image-reference" href="https://codecov.io/gh/TomzBench/jsmn-web-tokens"><img alt="https://codecov.io/gh/TomzBench/jsmn-web-tokens/branch/master/graph/badge.svg" src="https://codecov.io/gh/TomzBench/jsmn-web-tokens/branch/master/graph/badge.svg"/></a>
+
+<h2 id="about">About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
 <p>jsmn-web-tokens is a small library for encoding and decoding <a class="reference external" href="https://jwt.io">Json Web Tokens</a> intended for light weight embedded systems. jsmn-web-tokens relies on crypto primitives such as MBedTLS or WolfSSL which are targeted for constrained devices. jsmn-web-tokens can be configured to not rely on heap memory and has configuration options that are friendly toward IOT to control stack size.</p>
 
 
-<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/TomzBench/jsmn-web-tokens.git
 <span class="nb">cd</span> jsmn-web-tokens
 git submodule update --init
@@ -305,7 +311,7 @@ make install
 </div>
 
 
-<h1 id="configuration-options">Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h1>
+<h2 id="configuration-options">Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p class="first"><strong>BUILD_SHARED</strong></p>
 <blockquote>
@@ -361,7 +367,7 @@ make install
 </ul>
 
 
-<h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p><strong>Create some token</strong></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
 <span class="n">jsmn_token_encode_s</span> <span class="n">token</span><span class="p">;</span>
@@ -416,6 +422,7 @@ make install
 <li class="toctree-l1"><a class="reference internal" href="api_jsmn_token_get_claim_str.html">jsmn_token_get_claim_str</a></li>
 </ul>
 </div>
+
 
 
 

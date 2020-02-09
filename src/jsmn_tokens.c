@@ -175,10 +175,12 @@ jsmn_token_decode(
     t->alg = str_to_alg(alg.p, alg.len);
 
     err = -1;
-    if (!(t->n_head >= 2)) goto ERROR;
-    if (!(typ.len == 3)) goto ERROR;
-    if (!(t->alg == use_alg)) goto ERROR;
-    if (memcmp(typ.p, "JWT", typ.len)) goto ERROR;
+    if (!(t->n_head >= 2 &&    //
+          typ.len == 3 &&      //
+          t->alg == use_alg && //
+          !memcmp(typ.p, "JWT", typ.len))) {
+        goto ERROR;
+    }
 
     err = crypto_base64uri_decode(
         t->json, sizeof(t->json), &t->json_len, body.p, body.len);

@@ -246,6 +246,54 @@ test_jsmn_token_decode_fail_too_long(void** context_p)
         strlen(TOKEN_TOO_LONG));
     assert_int_equal(err, -1);
 }
+static void
+test_jsmn_token_decode_fail_header(void** context_p)
+{
+    // {\"alg\":\"HS256\",\"typ\":\"JWTX\"}
+    const char* jwtx = "eyJ0eXAiOiJKV1RYIiwiYWxnIjoiSFMyNTYifQ"
+                       ".eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaW"
+                       "F0IjoxNTE2MjM5MDIyfQ"
+                       ".HuefRNwPmxxtpRm7BXiDbLsyAlok9wnrzSs0WCuWn_Y";
+    // {\"alg\":\"HS256\",\"typ\":\"J\"}
+    const char* j = "eyJ0eXAiOiJKIiwiYWxnIjoiSFMyNTYifQ"
+                    ".eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwia"
+                    "WF0IjoxNTE2MjM5MDIyfQ"
+                    ".kCaiWYIcmCY0D8f35l7shCyY4E4M8b_4QscS4DdDhrQ";
+    const char* tokens[] = { jwtx, j, NULL };
+
+    jsmn_token_decode_s token;
+    int err, i = 0;
+
+    while (tokens[i]) {
+        err = jsmn_token_decode(
+            &token,
+            UNSAFE_SECRET,
+            JSMN_ALG_HS256,
+            tokens[i],
+            strlen(tokens[i]));
+        assert_int_equal(err, -1);
+        i++;
+    }
+}
+
+static void
+test_jsmn_token_decode_fail_unsupported(void** context_p)
+{
+    // {\"alg\":\"ES256\",\"typ\":\"JWT\"}
+    const char* unsupported = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9."
+                              "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9l"
+                              "IiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.tyh-"
+                              "VfuzIxCyGYDlkBA7DfyjrqmSHu6pQ2hoZuFqUSLPNY2N0mpH"
+                              "b3nk5K17HWP_3cYHBw7AhHale5wky6-sVA";
+    jsmn_token_decode_s token;
+    int err = jsmn_token_decode(
+        &token,
+        UNSAFE_SECRET,
+        JSMN_ALG_HS256,
+        unsupported,
+        strlen(unsupported));
+    assert_int_equal(err, -1);
+}
 
 static void
 test_jsmn_token_decode_fail_fuzz(void** context_p)
@@ -277,6 +325,8 @@ main(int argc, char* argv[])
         cmocka_unit_test(test_jsmn_token_decode_ok),
         cmocka_unit_test(test_jsmn_token_decode_fail_sig),
         cmocka_unit_test(test_jsmn_token_decode_fail_too_long),
+        cmocka_unit_test(test_jsmn_token_decode_fail_header),
+        cmocka_unit_test(test_jsmn_token_decode_fail_unsupported),
         cmocka_unit_test(test_jsmn_token_decode_fail_fuzz),
     };
 

@@ -10,6 +10,9 @@
      :scale: 150%
      :align: center
 
+Jasmine Web Tokens
+==================
+
 .. code-block:: c
 
   // Create token
@@ -18,20 +21,18 @@
   // Decode and validate token
   jsmn_token_decode(&token, "your-256-bit-secret", JSMN_ALG_HS256, jwt, strlen(jwt));
 
-
-About
-=====
-
 .. image:: https://travis-ci.com/TomzBench/jsmn-web-tokens.svg?branch=master
     :target: https://travis-ci.com/TomzBench/jsmn-web-tokens
 .. image:: https://codecov.io/gh/TomzBench/jsmn-web-tokens/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/TomzBench/jsmn-web-tokens
 
+About
+-----
 
 jsmn-web-tokens is a small library for encoding and decoding `Json Web Tokens <https://jwt.io>`_ intended for light weight embedded systems. jsmn-web-tokens relies on crypto primitives such as MBedTLS or WolfSSL which are targeted for constrained devices. jsmn-web-tokens can be configured to not rely on heap memory and has configuration options that are friendly toward IOT to control stack size.
 
 Getting Started
-===============
+---------------
 
 .. code-block:: bash
 
@@ -45,7 +46,7 @@ Getting Started
    make install
 
 Configuration Options
-=====================
+---------------------
 
 * **BUILD_SHARED**
 
@@ -98,7 +99,7 @@ Configuration Options
     *Default: OFF*
 
 Examples
-========
+--------
 
 **Create some token**
 

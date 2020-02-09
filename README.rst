@@ -11,6 +11,8 @@ About
 
 Small library for creating and decoding `Json Web Tokens <https://jwt.io>`_
 
+*(Pronounced "Jasmine Web Tokens".)*
+
 Docs
 ----
 

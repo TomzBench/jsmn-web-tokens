@@ -68,6 +68,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="JSMN_ALG" href="api_jsmn_alg.html" />
   
    
   
@@ -187,6 +188,59 @@
   
   
 
+  
+  
+    <p class="caption"><span class="caption-text">API</span></p>
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_alg.html" class="md-nav__link">JSMN_ALG</a>
+      
+    </li>
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_value.html" class="md-nav__link">jsmn_value</a>
+      
+    </li>
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_token_encode_s.html" class="md-nav__link">jsmn_token_encode_s</a>
+      
+    </li>
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_token_decode_s.html" class="md-nav__link">jsmn_token_decode_s</a>
+      
+    </li>
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_token_init.html" class="md-nav__link">jsmn_token_init</a>
+      
+    </li>
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_token_sign.html" class="md-nav__link">jsmn_token_sign</a>
+      
+    </li>
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_token_decode.html" class="md-nav__link">jsmn_token_decode</a>
+      
+    </li>
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_token_get_claim_int.html" class="md-nav__link">jsmn_token_get_claim_int</a>
+      
+    </li>
+    <li class="md-nav__item">
+    
+      <a href="api_jsmn_token_get_claim_str.html" class="md-nav__link">jsmn_token_get_claim_str</a>
+      
+    </li>
+  </ul>
+  
+
 </nav>
               </div>
             </div>
@@ -223,6 +277,13 @@
   <div class="align-center margin-bottom-20 docutils container">
 <a class="reference internal image-reference" href="_images/jwt.svg"><div align="center" class="align-center"><img alt="_images/jwt.svg" src="_images/jwt.svg"/></div>
 </a>
+</div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create token</span>
+<span class="n">jsmn_token_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">token</span><span class="p">,</span> <span class="n">JSMN_ALG_HS256</span><span class="p">,</span> <span class="s">"{</span><span class="se">\"</span><span class="s">sub</span><span class="se">\"</span><span class="s">:</span><span class="se">\"</span><span class="s">%s</span><span class="se">\"</span><span class="s">,</span><span class="se">\"</span><span class="s">iat</span><span class="se">\"</span><span class="s">:%d}"</span><span class="p">,</span> <span class="s">"user"</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+
+<span class="c1">// Decode and validate token</span>
+<span class="n">jsmn_token_decode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">token</span><span class="p">,</span> <span class="s">"your-256-bit-secret"</span><span class="p">,</span> <span class="n">JSMN_ALG_HS256</span><span class="p">,</span> <span class="n">jwt</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">jwt</span><span class="p">));</span>
+</pre></div>
 </div>
 
 <h1 id="index--page-root">About<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
@@ -303,7 +364,7 @@ make install
 <h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
 <p><strong>Create some token</strong></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
-<span class="n">jsmn_token_s</span> <span class="n">token</span><span class="p">;</span>
+<span class="n">jsmn_token_encode_s</span> <span class="n">token</span><span class="p">;</span>
 
 <span class="c1">// Create token</span>
 <span class="n">err</span> <span class="o">=</span> <span class="n">jsmn_token_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">token</span><span class="p">,</span> <span class="n">JSMN_ALG_HS256</span><span class="p">,</span> <span class="s">"{</span><span class="se">\"</span><span class="s">sub</span><span class="se">\"</span><span class="s">:</span><span class="se">\"</span><span class="s">%s</span><span class="se">\"</span><span class="s">,</span><span class="se">\"</span><span class="s">iat</span><span class="se">\"</span><span class="s">:%d}"</span><span class="p">,</span> <span class="s">"user"</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
@@ -318,7 +379,7 @@ make install
 </pre></div>
 </div>
 <p><strong>Decode some token</strong></p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">token</span> <span class="o">=</span> \
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">jwt</span> <span class="o">=</span> \
 <span class="n">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span><span class="p">.</span>\
 <span class="n">eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ</span><span class="p">.</span>\
 <span class="n">SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</span><span class="p">;</span>
@@ -327,7 +388,7 @@ make install
 <span class="n">jsmn_token_decode_s</span> <span class="n">token</span><span class="p">;</span>
 
 <span class="c1">// Decode and validate token</span>
-<span class="n">err</span> <span class="o">=</span> <span class="n">jsmn_token_decode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">token</span><span class="p">,</span> <span class="s">"your-256-bit-secret"</span><span class="p">,</span> <span class="n">JSMN_ALG_HS256</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">t</span><span class="p">));</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">jsmn_token_decode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">token</span><span class="p">,</span> <span class="s">"your-256-bit-secret"</span><span class="p">,</span> <span class="n">JSMN_ALG_HS256</span><span class="p">,</span> <span class="n">jwt</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">jwt</span><span class="p">));</span>
 
 <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">jsmn_value</span> <span class="n">sub</span><span class="p">,</span> <span class="n">name</span><span class="p">;</span>
@@ -342,10 +403,19 @@ make install
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">
-</div>
-<ul class="simple">
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_alg.html">JSMN_ALG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_value.html">jsmn_value</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_token_encode_s.html">jsmn_token_encode_s</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_token_decode_s.html">jsmn_token_decode_s</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_token_init.html">jsmn_token_init</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_token_sign.html">jsmn_token_sign</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_token_decode.html">jsmn_token_decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_token_get_claim_int.html">jsmn_token_get_claim_int</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_jsmn_token_get_claim_str.html">jsmn_token_get_claim_str</a></li>
 </ul>
+</div>
 
 
 
@@ -358,6 +428,17 @@ make install
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
+          
+            <a href="api_jsmn_alg.html" title="Admonition"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> JSMN_ALG </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
           
         </a>
         

@@ -161,6 +161,8 @@ jsmn_token_decode(
     sig.p = ++dot;
     sig.len = token_len - head.len - body.len - 2;
 
+    if (!(head.len && body.len && sig.len)) goto ERROR;
+
     err = crypto_base64uri_decode(b, sizeof(b), &l, head.p, head.len);
     if (err) goto ERROR;
 

@@ -247,6 +247,25 @@ test_jsmn_token_decode_fail_too_long(void** context_p)
     assert_int_equal(err, -1);
 }
 
+static void
+test_jsmn_token_decode_fail_fuzz(void** context_p)
+{
+    const char* fuzz_tokens[] = { ".",    "..",     "...",      "a..b.",
+                                  ".abc", "fooooo", "fooo.ooo", NULL };
+    int i = 0, err;
+    jsmn_token_decode_s token;
+    while (fuzz_tokens[i]) {
+        err = jsmn_token_decode(
+            &token,
+            UNSAFE_SECRET,
+            JSMN_ALG_HS256,
+            fuzz_tokens[i],
+            strlen(fuzz_tokens[i]));
+        assert_int_equal(err, -1);
+        i++;
+    }
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -258,6 +277,7 @@ main(int argc, char* argv[])
         cmocka_unit_test(test_jsmn_token_decode_ok),
         cmocka_unit_test(test_jsmn_token_decode_fail_sig),
         cmocka_unit_test(test_jsmn_token_decode_fail_too_long),
+        cmocka_unit_test(test_jsmn_token_decode_fail_fuzz),
     };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);

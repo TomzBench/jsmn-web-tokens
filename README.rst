@@ -1,5 +1,5 @@
-jsmn-web-tokens
-===============
+Jasmine Web Tokens
+==================
 
 .. image:: https://travis-ci.com/TomzBench/jsmn-web-tokens.svg?branch=master
     :target: https://travis-ci.com/TomzBench/jsmn-web-tokens
@@ -10,8 +10,6 @@ About
 -----
 
 Small library for creating and decoding `Json Web Tokens <https://jwt.io>`_
-
-*(Pronounced "Jasmine Web Tokens".)*
 
 Docs
 ----

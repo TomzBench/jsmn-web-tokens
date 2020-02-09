@@ -33,7 +33,6 @@ if(ENABLE_TESTING)
 
   APPEND_COVERAGE_COMPILER_FLAGS()
   set(COVERAGE_LCOV_EXCLUDES
-    "${PROJECT_SOURCE_DIR}/src/crypto/*"
     "${PROJECT_SOURCE_DIR}/include/jsmn/jsmn.h"
     "${PROJECT_SOURCE_DIR}/external"
     "${PROJECT_SOURCE_DIR}/examples"

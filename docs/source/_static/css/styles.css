@@ -1,0 +1,59 @@
+.container {
+}
+
+.align-center {
+  text-align: center;
+}
+.margin-bottom-10 {
+  margin-bottom: 10px;
+}
+
+.margin-bottom-20 {
+  margin-bottom: 20px;
+}
+
+.blue {
+  color: #337ab7;
+}
+
+.red {
+  color: red;
+}
+
+.incomplete {
+  text-decoration: line-through;
+}
+
+.font-small {
+  font-size: small;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+h1 {
+  border-bottom: 1px solid #ddd;
+}
+
+h2 {
+  border-bottom: 1px solid #ddd;
+}
+
+img.align-center {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.wide {
+  width: 100%;
+}
+
+.md-typeset__table {
+  width: 100%;
+}
+
+.x-small {
+  font-size: x-small;
+}

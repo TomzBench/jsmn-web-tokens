@@ -1,5 +1,5 @@
-#include "jsmn/jsmn_tokens.h"
 #include "jsmn/jsmn_helpers.h"
+#include "jsmn/jsmn_tokens.h"
 
 #include <setjmp.h>
 
@@ -148,7 +148,7 @@ test_jsmn_token_init_ok(void** context_p)
     ((void)context_p);
 
     int err;
-    jsmn_token_s t;
+    jsmn_token_encode_s t;
     JSMN_ALG algs[] = { JSMN_ALG_HS256, JSMN_ALG_HS384, JSMN_ALG_HS512 };
     const char* payloads[] = { EXPECT_HEADER_HS256 "." EXPECT_PAYLOAD_HS256,
                                EXPECT_HEADER_HS384 "." EXPECT_PAYLOAD_HS384,
@@ -246,6 +246,73 @@ test_jsmn_token_decode_fail_too_long(void** context_p)
         strlen(TOKEN_TOO_LONG));
     assert_int_equal(err, -1);
 }
+static void
+test_jsmn_token_decode_fail_header(void** context_p)
+{
+    // {\"alg\":\"HS256\",\"typ\":\"JWTX\"}
+    const char* jwtx = "eyJ0eXAiOiJKV1RYIiwiYWxnIjoiSFMyNTYifQ"
+                       ".eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaW"
+                       "F0IjoxNTE2MjM5MDIyfQ"
+                       ".HuefRNwPmxxtpRm7BXiDbLsyAlok9wnrzSs0WCuWn_Y";
+    // {\"alg\":\"HS256\",\"typ\":\"J\"}
+    const char* j = "eyJ0eXAiOiJKIiwiYWxnIjoiSFMyNTYifQ"
+                    ".eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwia"
+                    "WF0IjoxNTE2MjM5MDIyfQ"
+                    ".kCaiWYIcmCY0D8f35l7shCyY4E4M8b_4QscS4DdDhrQ";
+    const char* tokens[] = { jwtx, j, NULL };
+
+    jsmn_token_decode_s token;
+    int err, i = 0;
+
+    while (tokens[i]) {
+        err = jsmn_token_decode(
+            &token,
+            UNSAFE_SECRET,
+            JSMN_ALG_HS256,
+            tokens[i],
+            strlen(tokens[i]));
+        assert_int_equal(err, -1);
+        i++;
+    }
+}
+
+static void
+test_jsmn_token_decode_fail_unsupported(void** context_p)
+{
+    // {\"alg\":\"ES256\",\"typ\":\"JWT\"}
+    const char* unsupported = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9."
+                              "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9l"
+                              "IiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.tyh-"
+                              "VfuzIxCyGYDlkBA7DfyjrqmSHu6pQ2hoZuFqUSLPNY2N0mpH"
+                              "b3nk5K17HWP_3cYHBw7AhHale5wky6-sVA";
+    jsmn_token_decode_s token;
+    int err = jsmn_token_decode(
+        &token,
+        UNSAFE_SECRET,
+        JSMN_ALG_HS256,
+        unsupported,
+        strlen(unsupported));
+    assert_int_equal(err, -1);
+}
+
+static void
+test_jsmn_token_decode_fail_fuzz(void** context_p)
+{
+    const char* fuzz_tokens[] = { ".",    "..",     "...",      "a..b.",
+                                  ".abc", "fooooo", "fooo.ooo", NULL };
+    int i = 0, err;
+    jsmn_token_decode_s token;
+    while (fuzz_tokens[i]) {
+        err = jsmn_token_decode(
+            &token,
+            UNSAFE_SECRET,
+            JSMN_ALG_HS256,
+            fuzz_tokens[i],
+            strlen(fuzz_tokens[i]));
+        assert_int_equal(err, -1);
+        i++;
+    }
+}
 
 int
 main(int argc, char* argv[])
@@ -258,6 +325,9 @@ main(int argc, char* argv[])
         cmocka_unit_test(test_jsmn_token_decode_ok),
         cmocka_unit_test(test_jsmn_token_decode_fail_sig),
         cmocka_unit_test(test_jsmn_token_decode_fail_too_long),
+        cmocka_unit_test(test_jsmn_token_decode_fail_header),
+        cmocka_unit_test(test_jsmn_token_decode_fail_unsupported),
+        cmocka_unit_test(test_jsmn_token_decode_fail_fuzz),
     };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);

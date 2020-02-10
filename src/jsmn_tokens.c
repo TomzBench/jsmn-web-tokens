@@ -14,7 +14,7 @@ alg_to_str(JSMN_ALG alg)
 static JSMN_ALG
 str_to_alg(const char* str, uint32_t len)
 {
-    JSMN_ALG alg = JSMN_ALG_ERROR;
+    JSMN_ALG alg = JSMN_ALG_NONE;
     if (len == 5) {
         for (int i = 0; i < JSMN_ALG_COUNT; i++) {
             if (!memcmp(str, alg_strings[i], 5)) {
@@ -30,7 +30,7 @@ static uint32_t
 alg_to_keysize(JSMN_ALG alg)
 {
     switch (alg) {
-        case JSMN_ALG_ERROR: return 0; break;
+        case JSMN_ALG_NONE: return 0; break;
         case JSMN_ALG_HS256: return 32; break;
         case JSMN_ALG_HS384: return 48; break;
         case JSMN_ALG_HS512: return 64; break;
@@ -38,7 +38,7 @@ alg_to_keysize(JSMN_ALG alg)
 }
 
 static inline int
-append_b64(jsmn_token_s* token, const char* buffer, uint32_t len)
+append_b64(jsmn_token_encode_s* token, const char* buffer, uint32_t len)
 {
     int err;
     uint32_t newlen;
@@ -53,20 +53,24 @@ append_b64(jsmn_token_s* token, const char* buffer, uint32_t len)
 }
 
 static inline void
-append_dot(jsmn_token_s* token)
+append_dot(jsmn_token_encode_s* token)
 {
     __jsmn_assert(token->len < sizeof(token->b));
     token->b[token->len++] = '.';
 }
 
 int
-jsmn_token_init(jsmn_token_s* token, JSMN_ALG alg, const char* claims, ...)
+jsmn_token_init(
+    jsmn_token_encode_s* token,
+    JSMN_ALG alg,
+    const char* claims,
+    ...)
 {
     int err = -1;
     char buffer[JSMN_MAX_TOKEN_LEN];
     va_list list;
 
-    memset(token, 0, sizeof(jsmn_token_s));
+    memset(token, 0, sizeof(jsmn_token_encode_s));
     token->alg = alg;
 
     // print the header
@@ -94,7 +98,7 @@ ERROR:
 }
 
 int
-jsmn_token_sign(jsmn_token_s* t, const char* key, uint32_t keylen)
+jsmn_token_sign(jsmn_token_encode_s* t, const char* key, uint32_t keylen)
 {
     char hash[512] = { 0 };
     int err;
@@ -113,13 +117,13 @@ ERROR:
 }
 
 uint32_t
-jsmn_token_len(jsmn_token_s* t)
+jsmn_token_len(jsmn_token_encode_s* t)
 {
     return t->len;
 }
 
 const char*
-jsmn_token_data(jsmn_token_s* t)
+jsmn_token_data(jsmn_token_encode_s* t)
 {
     return t->b;
 }
@@ -144,18 +148,16 @@ jsmn_token_decode(
     // populate head
     head.p = token;
     dot = memchr(token, '.', token_len);
-    if (!dot) goto ERROR;
-    head.len = dot - head.p;
+    if (!(dot && (head.len = dot - head.p))) goto ERROR;
 
     // populate body
     body.p = ++dot;
     dot = memchr(dot, '.', &token[token_len] - dot);
-    if (!dot) goto ERROR;
-    body.len = dot - body.p;
+    if (!(dot && (body.len = dot - body.p))) goto ERROR;
 
     // populate sig
     sig.p = ++dot;
-    sig.len = token_len - head.len - body.len - 2;
+    if (!(sig.len = token_len - head.len - body.len - 2)) goto ERROR;
 
     err = crypto_base64uri_decode(b, sizeof(b), &l, head.p, head.len);
     if (err) goto ERROR;
@@ -173,10 +175,12 @@ jsmn_token_decode(
     t->alg = str_to_alg(alg.p, alg.len);
 
     err = -1;
-    if (!(t->n_head >= 2)) goto ERROR;
-    if (!(typ.len == 3)) goto ERROR;
-    if (!(t->alg == use_alg)) goto ERROR;
-    if (memcmp(typ.p, "JWT", typ.len)) goto ERROR;
+    if (!(t->n_head >= 2 &&    //
+          typ.len == 3 &&      //
+          t->alg == use_alg && //
+          !memcmp(typ.p, "JWT", typ.len))) {
+        goto ERROR;
+    }
 
     err = crypto_base64uri_decode(
         t->json, sizeof(t->json), &t->json_len, body.p, body.len);

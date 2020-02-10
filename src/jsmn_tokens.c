@@ -14,7 +14,7 @@ alg_to_str(JSMN_ALG alg)
 static JSMN_ALG
 str_to_alg(const char* str, uint32_t len)
 {
-    JSMN_ALG alg = JSMN_ALG_ERROR;
+    JSMN_ALG alg = JSMN_ALG_NONE;
     if (len == 5) {
         for (int i = 0; i < JSMN_ALG_COUNT; i++) {
             if (!memcmp(str, alg_strings[i], 5)) {
@@ -30,7 +30,7 @@ static uint32_t
 alg_to_keysize(JSMN_ALG alg)
 {
     switch (alg) {
-        case JSMN_ALG_ERROR: return 0; break;
+        case JSMN_ALG_NONE: return 0; break;
         case JSMN_ALG_HS256: return 32; break;
         case JSMN_ALG_HS384: return 48; break;
         case JSMN_ALG_HS512: return 64; break;

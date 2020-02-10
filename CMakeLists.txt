@@ -8,6 +8,8 @@ endif()
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE on)
+
 # BOOL OPTIONS
 option(BUILD_SHARED "Whether or not to build the shared object"  ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)

@@ -26,9 +26,6 @@ Jasmine Web Tokens
 .. image:: https://codecov.io/gh/TomzBench/jsmn-web-tokens/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/TomzBench/jsmn-web-tokens
 
-.. image:: _static/img/view-on-jwt.io.svg
-   :align: left
-
 About
 -----
 

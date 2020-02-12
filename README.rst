@@ -6,12 +6,8 @@ Jasmine Web Tokens
 .. image:: https://codecov.io/gh/TomzBench/jsmn-web-tokens/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/TomzBench/jsmn-web-tokens
 
-.. container::
-
-    .. image:: docs/source/_static/img/view-on-jwt.io.svg
-        :target: https://jwt.io
-        :align: left
-
+.. image:: docs/source/_static/img/view-on-jwt.io.svg
+    :target: https://jwt.io
 
 About
 -----

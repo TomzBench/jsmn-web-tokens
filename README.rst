@@ -8,6 +8,7 @@ Jasmine Web Tokens
 
 .. image:: docs/source/_static/img/view-on-jwt.io.svg
     :target: https://jwt.io
+    :align: left
 
 
 About

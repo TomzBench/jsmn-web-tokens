@@ -1,13 +1,19 @@
+.. |br| raw:: html
+
+   <br />
+
 Jasmine Web Tokens
 ==================
 
-| .. image:: https://travis-ci.com/TomzBench/jsmn-web-tokens.svg?branch=master
-      :target: https://travis-ci.com/TomzBench/jsmn-web-tokens
+.. image:: https://travis-ci.com/TomzBench/jsmn-web-tokens.svg?branch=master
+    :target: https://travis-ci.com/TomzBench/jsmn-web-tokens
 .. image:: https://codecov.io/gh/TomzBench/jsmn-web-tokens/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/TomzBench/jsmn-web-tokens
 
-| .. image:: docs/source/_static/img/view-on-jwt.io.svg
-      :target: https://jwt.io
+|br|
+
+.. image:: docs/source/_static/img/view-on-jwt.io.svg
+    :target: https://jwt.io
 
 About
 -----

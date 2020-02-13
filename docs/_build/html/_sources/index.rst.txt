@@ -6,9 +6,10 @@
 .. rst-class:: align-center margin-bottom-20 
 .. container::
 
-  .. image:: _static/img/jwt.svg
+  .. image:: https://jwt.io/img/logo-asset.svg
      :scale: 150%
      :align: center
+     :target: https://jwt.io
 
 Jasmine Web Tokens
 ==================

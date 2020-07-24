@@ -4,16 +4,25 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#ifdef _WIN32
-#ifdef JSMN_TOKENS_EXPORT
-#define JSMN_TOKENS_API __declspec(dllexport)
+#if defined _WIN32
+#if defined JSMN_TOKENS_STATIC
+#define JSMN_TOKENS_EXPORT
+#elif defined DLL_EXPORT
+#define JSMN_TOKENS_EXPORT __declspec(dllexport)
 #else
-#define JSMN_TOKENS_API __declspec(dllimport)
+#define JSMN_TOKENS_EXPORT __declspec(dllimport)
 #endif
 #else
-#define JSMN_TOKENS_API
+#if defined __SUNPRO_C || defined __SUNPRO_CC
+#define JSMN_TOKENS_EXPORT __global
+#elif (defined __GNUC__ && __GNUC__ >= 4) || defined __INTEL_COMPILER
+#define JSMN_TOKENS_EXPORT __attribute__((visibility("default")))
+#else
+#define JSMN_TOKENS_EXPORT
+#endif
 #endif
 
+#else
 #ifndef JSMN_MAX_TOKEN_LEN
 #define JSMN_MAX_TOKEN_LEN 256
 #endif

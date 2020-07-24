@@ -80,6 +80,7 @@ if(BUILD_SHARED)
   install(TARGETS jsmn_tokens_shared
           LIBRARY DESTINATION lib
           ARCHIVE DESTINATION lib
+          RUNTIME DESTINATION bin
           PUBLIC_HEADER DESTINATION include/jsmn)
 endif()
 
@@ -98,5 +99,6 @@ if(BUILD_STATIC)
   install(TARGETS jsmn_tokens_static
           LIBRARY DESTINATION lib
           ARCHIVE DESTINATION lib
+          RUNTIME DESTINATION bin
           PUBLIC_HEADER DESTINATION include/jsmn)
 endif()

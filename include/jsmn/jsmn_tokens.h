@@ -14,17 +14,12 @@
 #    define JSMN_TOKENS_EXPORT __declspec(dllimport)
 #  endif
 #else
-#  if defined __SUNPRO_C || defined __SUNPRO_CC
-#    define JSMN_TOKENS_EXPORT __global
-#  elif (defined __GNUC__ && __GNUC__ >= 4) || defined __INTEL_COMPILER
-#    define JSMN_TOKENS_EXPORT __attribute__((visibility("default")))
-#  else
-#    define JSMN_TOKENS_EXPORT
-#  endif
+#  define JSMN_TOKENS_EXPORT
 #endif
 // clang-format on
 
-#else
+#define JSMN_TOKENS_EXPORT
+
 #ifndef JSMN_MAX_TOKEN_LEN
 #define JSMN_MAX_TOKEN_LEN 256
 #endif

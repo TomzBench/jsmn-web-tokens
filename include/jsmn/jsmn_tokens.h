@@ -4,6 +4,16 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#ifdef _WIN32
+#ifdef JSMN_TOKENS_EXPORT
+#define JSMN_TOKENS_API __declspec(dllexport)
+#else
+#define JSMN_TOKENS_API __declspec(dllimport)
+#endif
+#else
+#define JSMN_TOKENS_API
+#endif
+
 #ifndef JSMN_MAX_TOKEN_LEN
 #define JSMN_MAX_TOKEN_LEN 256
 #endif
@@ -73,26 +83,26 @@ extern "C"
         char json[JSMN_MAX_TOKEN_LEN];
     } jsmn_token_decode_s;
 
-    int jsmn_token_init(
+    JSMN_TOKENS_API int jsmn_token_init(
         jsmn_token_encode_s* t,
         JSMN_ALG alg,
         const char* claims,
         ...);
-    int
+    JSMN_TOKENS_API int
     jsmn_token_sign(jsmn_token_encode_s* t, const char* secret, uint32_t slen);
-    uint32_t jsmn_token_len(jsmn_token_encode_s* t);
-    const char* jsmn_token_data(jsmn_token_encode_s* t);
-    int jsmn_token_decode(
+    JSMN_TOKENS_API uint32_t jsmn_token_len(jsmn_token_encode_s* t);
+    JSMN_TOKENS_API const char* jsmn_token_data(jsmn_token_encode_s* t);
+    JSMN_TOKENS_API int jsmn_token_decode(
         jsmn_token_decode_s*,
         const char* secret,
         JSMN_ALG,
         const char*,
         uint32_t);
-    int jsmn_token_get_claim_str(
+    JSMN_TOKENS_API int jsmn_token_get_claim_str(
         jsmn_token_decode_s* t,
         const char* claim,
         jsmn_value* result);
-    int jsmn_token_get_claim_int(
+    JSMN_TOKENS_API int jsmn_token_get_claim_int(
         jsmn_token_decode_s* token,
         const char* claim,
         int* result);

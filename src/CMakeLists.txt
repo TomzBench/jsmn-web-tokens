@@ -73,6 +73,7 @@ if(BUILD_SHARED)
   target_compile_definitions(jsmn_tokens_shared PRIVATE ${DEFS})
   set_target_properties(jsmn_tokens_shared PROPERTIES
     PUBLIC_HEADER "${INSTALL_HEADERS}"
+    COMPILE_DEFINITIONS "JSMN_TOKENS_EXPORT"
     OUTPUT_NAME jsmn-web-tokens)
   if(INCS)
     target_include_directories(jsmn_tokens_shared PUBLIC ${INCS})

@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 // clang-format off
-#ifdef _WIN32
+#if defined _WIN32
 #  include <assert.h>
 #  include <stdarg.h>
 #  include <stdbool.h>
@@ -18,7 +18,9 @@
 #  define __jsmn_malloc(x) __jsmn_malloc_fn(x)
 #  define __jsmn_free(x) __jsmn_free_fn(x)
 #  define __jsmn_assert(x) __jsmn_assert_fn(x)
-#  ifdef JSMN_TOKENS_EXPORT
+#  if defined JSMN_TOKENS_STATIC
+#    define JSMN_TOKENS_API
+#  elif defined DLL_EXPORT
 #    define JSMN_TOKENS_API __declspec(dllexport)
 #  else
 #    define JSMN_TOKENS_API __declspec(dllimport)

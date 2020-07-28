@@ -28,4 +28,12 @@ matrix:
                                           - lcov
                                           - libssl-dev
                   script:
-                                - ./scripts/ci/build.sh
+                          - ./scripts/ci/build.sh
+                - os: windows
+                  language: c
+                  env:
+                          - WITH_CRYPTO=OPENSSL
+                            WITH_SYSTEM_DEPENDENCIES=ON
+                  script:
+                          - choco install openssl
+                          - ./scripts/ci/build.sh

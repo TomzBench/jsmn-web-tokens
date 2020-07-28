@@ -18,8 +18,6 @@
 #endif
 // clang-format on
 
-#define JSMN_TOKENS_EXPORT
-
 #ifndef JSMN_MAX_TOKEN_LEN
 #define JSMN_MAX_TOKEN_LEN 256
 #endif

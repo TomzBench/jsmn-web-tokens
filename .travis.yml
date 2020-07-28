@@ -1,26 +1,39 @@
-language: c
-env:
-        - WITH_CRYPTO=MBEDTLS
-          WITH_SYSTEM_DEPENDENCIES=OFF
-          ENABLE_TESTING=ON
-        - WITH_CRYPTO=OPENSSL
-          WITH_SYSTEM_DEPENDENCIES=ON
-          ENABLE_TESTING=ON
-addons:
-        apt:
-                packages:
-                        - valgrind
-                        - lcov
-                        - libssl-dev
-script:
-        - cmake
-          -DCMAKE_INSTALL_PREFIX=./build/install
-          -DWITH_CRYPTO=$WITH_CRYPTO
-          -DWITH_SYSTEM_DEPENDENCIES=$WITH_SYSTEM_DEPENDENCIES
-          -DENABLE_TESTING=$ENABLE_TESTING .
-        - cmake --build . --target install
-        - if [ $ENABLE_TESTING ]; then
-          ctest -T memcheck &&
-          make test-coverage &&
-          bash <(curl -s https://codecov.io/bash) -f test-coverage.info;
-          fi
+matrix:
+        include:
+                - os: linux
+                  language: c
+                  env:
+                          - WITH_CRYPTO=MBEDTLS
+                            WITH_SYSTEM_DEPENDENCIES=OFF
+                            ENABLE_TESTING=ON
+                  addons:
+                          apt:
+                                  packages:
+                                          - valgrind
+                                          - lcov
+                                          - libssl-dev
+                  script:
+                          - ./scripts/ci/build.sh
+                - os: linux
+                  language: c
+                  env:
+                          - WITH_CRYPTO=OPENSSL
+                            WITH_SYSTEM_DEPENDENCIES=ON
+                            ENABLE_TESTING=ON
+
+                  addons:
+                          apt:
+                                  packages:
+                                          - valgrind
+                                          - lcov
+                                          - libssl-dev
+                  script:
+                          - ./scripts/ci/build.sh
+                - os: windows
+                  language: c
+                  env:
+                          - WITH_CRYPTO=OPENSSL
+                            WITH_SYSTEM_DEPENDENCIES=ON
+                  script:
+                          - choco install openssl
+                          - ./scripts/ci/build.sh

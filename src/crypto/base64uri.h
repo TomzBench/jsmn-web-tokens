@@ -1,7 +1,7 @@
 #ifndef CRYPTO_BASE64_URI_H
 #define CRYPTO_BASE64_URI_H
 
-#include "jsmn/jsmn_helpers.h"
+#include "jsmn_tokens.h"
 
 #ifdef __cplusplus
 extern "C"

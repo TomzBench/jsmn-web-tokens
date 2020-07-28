@@ -1,5 +1,147 @@
+#include "jsmn.h"
+
 #include "crypto/crypto.h"
-#include "jsmn/jsmn_helpers.h"
+#include "jsmn_tokens.h"
+#include <errno.h>
+#include <limits.h>
+#include <stdio.h>
+#include <string.h>
+
+#define json_for_each_obj(i, t, obj)                                           \
+    for (i = 0, t = (obj) + 1; i < (obj)->size; t = json_next(t + 1), i++)
+#define json_for_each_arr(i, t, arr)                                           \
+    for (i = 0, t = (arr) + 1; i < (arr)->size; t = json_next(t), i++)
+
+static bool
+json_tok_is_null(const char* buffer, const jsmntok_t* tok)
+{
+    if (tok->type != JSMN_PRIMITIVE) return false;
+    return buffer[tok->start] == 'n';
+}
+
+static const jsmntok_t*
+json_next(const jsmntok_t* tok)
+{
+    const jsmntok_t* t;
+    size_t i;
+
+    for (t = tok + 1, i = 0; i < tok->size; i++) t = json_next(t);
+
+    return t;
+}
+
+static bool
+json_tok_streq(const char* buffer, const jsmntok_t* tok, const char* str)
+{
+    if (tok->type != JSMN_STRING) return false;
+    if (tok->end - tok->start != strlen(str)) return false;
+    return strncmp(buffer + tok->start, str, tok->end - tok->start) == 0;
+}
+
+static const jsmntok_t*
+json_get_member(const char* buffer, const jsmntok_t tok[], const char* label)
+{
+    const jsmntok_t* t;
+    size_t i;
+
+    if (tok->type != JSMN_OBJECT) return NULL;
+
+    json_for_each_obj(
+        i, t, tok) if (json_tok_streq(buffer, t, label)) return t +
+        1;
+
+    return NULL;
+}
+
+static const jsmntok_t*
+json_get_arr(const jsmntok_t tok[], size_t index)
+{
+    const jsmntok_t* t;
+    size_t i;
+
+    if (tok->type != JSMN_ARRAY) return NULL;
+
+    json_for_each_arr(i, t, tok)
+    {
+        if (index == 0) return t;
+        index--;
+    }
+
+    return NULL;
+}
+
+static const jsmntok_t*
+json_delve(const char* buf, const jsmntok_t* tok, const char* guide)
+{
+    char key[128];
+    while (*guide) {
+        int len, sz = strcspn(guide + 1, ".");
+        len = snprintf(key, sizeof(key), "%.*s", sz, guide + 1);
+        assert(len < sizeof(key));
+        switch (guide[0]) {
+            case '.':
+                if (!(tok->type == JSMN_OBJECT)) return NULL;
+                tok = json_get_member(buf, tok, key);
+                if (!tok) return NULL;
+                break;
+            default: abort();
+        }
+        guide += sz + 1;
+    }
+    return tok;
+}
+
+static int
+json_to_u64(const char* buf, const jsmntok_t* tok, uint64_t* n)
+{
+    char* end;
+    unsigned long long l;
+    l = strtoull(buf + tok->start, &end, 0);
+    if (end != buf + tok->end) return false;
+    assert(sizeof(l) >= sizeof(*n));
+    *n = l;
+    if ((l == ULLONG_MAX) && errno == ERANGE) return -1;
+    return *n == l ? 0 : -1;
+}
+
+static int
+json_to_s64(const char* buf, const jsmntok_t* tok, int64_t* n)
+{
+    char* end;
+    unsigned long long l;
+    l = strtoull(buf + tok->start, &end, 0);
+    if (end != buf + tok->end) return false;
+    assert(sizeof(l) >= sizeof(*n));
+    *n = l;
+    if ((l == LONG_MAX || l == LONG_MIN) && errno == ERANGE) return -1;
+    return *n == l ? 0 : -1;
+}
+
+#define make_json_to_u(id, type)                                               \
+    static int json_to_##id(                                                   \
+        const char* buffer, const jsmntok_t* tok, type* ret)                   \
+    {                                                                          \
+        uint64_t x;                                                            \
+        if (json_to_u64(buffer, tok, &x)) return -1;                           \
+        *ret = x;                                                              \
+        return *ret == x ? 0 : -1;                                             \
+    }
+
+#define make_json_to_s(id, type)                                               \
+    static int json_to_##id(                                                   \
+        const char* buffer, const jsmntok_t* tok, type* ret)                   \
+    {                                                                          \
+        int64_t x;                                                             \
+        if (json_to_s64(buffer, tok, &x)) return -1;                           \
+        *ret = x;                                                              \
+        return *ret == x ? 0 : -1;                                             \
+    }
+make_json_to_u(u32, uint32_t);
+make_json_to_s(s32, int32_t);
+make_json_to_u(u16, uint16_t);
+make_json_to_s(s16, int16_t);
+make_json_to_u(u8, uint8_t);
+make_json_to_s(s8, int8_t);
 
 static const char* alg_strings[JSMN_ALG_COUNT] = { "HS256", "HS384", "HS512" };
 
@@ -140,7 +282,8 @@ jsmn_token_decode(
     const char* dot;
     int err = -1;
     uint32_t l, slen = secret ? strlen(secret) : 0;
-    jsmn_value head, body, sig, alg, typ;
+    jsmn_value head, body, sig;
+    const jsmntok_t *alg, *typ;
     jsmn_parser p;
 
     memset(t, 0, sizeof(jsmn_token_decode_s));
@@ -162,23 +305,20 @@ jsmn_token_decode(
     err = crypto_base64uri_decode(b, sizeof(b), &l, head.p, head.len);
     if (err) goto ERROR;
 
-    // clang-format off
-    t->n_head = jsmn_parse_tokens(
-        t->head,
-        JSMN_MAX_HEADER_TOKENS,
-        b,
-        l,
-        2,
-        "alg", &alg,
-        "typ", &typ);
-    // clang-format on
-    t->alg = str_to_alg(alg.p, alg.len);
-
-    err = -1;
-    if (!(t->n_head >= 2 &&    //
-          typ.len == 3 &&      //
-          t->alg == use_alg && //
-          !memcmp(typ.p, "JWT", typ.len))) {
+    jsmn_init(&p);
+    err = jsmn_parse(&p, b, l, t->head, JSMN_MAX_HEADER_TOKENS);
+    if (!(err < JSMN_MAX_HEADER_TOKENS)) goto ERROR;
+    alg = json_get_member(b, t->head, "alg");
+    typ = json_get_member(b, t->head, "typ");
+    if (!(alg && typ &&                   //
+          (typ->end - typ->start == 3) && //
+          !memcmp(&b[typ->start], "JWT", 3))) {
+        err = -1;
+        goto ERROR;
+    }
+    t->alg = str_to_alg(&b[alg->start], alg->end - alg->start);
+    if (!(t->alg == use_alg)) {
+        err = -1;
         goto ERROR;
     }
 
@@ -209,43 +349,20 @@ ERROR:
     return err;
 }
 
-typedef struct seek_claim_context
-{
-    jsmn_value* find;
-    const char* claim;
-    uint32_t claim_len;
-} seek_claim_context;
-
-static void
-seek_claim(void* context, jsmn_value* key, jsmn_value* val)
-{
-    seek_claim_context* ctx = context;
-    if (key->len == ctx->claim_len && !(memcmp(key->p, ctx->claim, key->len))) {
-        ctx->find->p = val->p;
-        ctx->find->len = val->len;
-    }
-}
-
 int
 jsmn_token_get_claim_str(
     jsmn_token_decode_s* token,
     const char* claim,
     jsmn_value* result)
 {
-    int ret = -1;
-    jsmn_value find = { .p = NULL, .len = 0 };
-    seek_claim_context ctx = { .find = &find,
-                               .claim = claim,
-                               .claim_len = strlen(claim) };
-    result->p = NULL;
-    result->len = 0;
-    jsmn_foreach(token->body, token->n_body, token->json, seek_claim, &ctx);
-    if (find.p) {
-        result->p = find.p;
-        result->len = find.len;
-        ret = 0;
+    const jsmntok_t* find = json_get_member(token->json, token->body, claim);
+    if (find) {
+        result->p = &token->json[find->start];
+        result->len = find->end - find->start;
+        return 0;
+    } else {
+        return -1;
     }
-    return ret;
 }
 
 int
@@ -254,18 +371,19 @@ jsmn_token_get_claim_int(
     const char* claim,
     int* result)
 {
-    int ret = -1;
     char buff[32];
-    jsmn_value find = { .p = NULL, .len = 0 };
-    seek_claim_context ctx = { .find = &find,
-                               .claim = claim,
-                               .claim_len = strlen(claim) };
-    *result = 0;
-    jsmn_foreach(token->body, token->n_body, token->json, seek_claim, &ctx);
-    if (find.p) {
-        snprintf(buff, sizeof(buff), "%.*s", find.len, find.p);
+    const jsmntok_t* find = json_get_member(token->json, token->body, claim);
+    if (find) {
+        snprintf(
+            buff,
+            sizeof(buff),
+            "%.*s",
+            find->end - find->start,
+            &token->json[find->start]);
         *result = atoi(buff);
-        ret = 0;
+        return 0;
+    } else {
+        return -1;
     }
-    return ret;
 }
+

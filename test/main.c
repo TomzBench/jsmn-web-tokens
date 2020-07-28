@@ -1,5 +1,14 @@
-#include "jsmn/jsmn_helpers.h"
-#include "jsmn/jsmn_tokens.h"
+#include "jsmn_tokens.h"
+#include <assert.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "jsmn.h"
 
 #include <setjmp.h>
 

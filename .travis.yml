@@ -1,31 +1,31 @@
 matrix:
         include:
                 - os: linux
-                language: c
-                env:
-                        - WITH_CRYPTO=MBEDTLS
-                          WITH_SYSTEM_DEPENDENCIES=OFF
-                          ENABLE_TESTING=ON
-                addons:
-                        apt:
-                                packages:
-                                        - valgrind
-                                        - lcov
-                                        - libssl-dev
-                script:
-                        - ./scripts/ci/build.sh
+                  language: c
+                  env:
+                          - WITH_CRYPTO=MBEDTLS
+                            WITH_SYSTEM_DEPENDENCIES=OFF
+                            ENABLE_TESTING=ON
+                  addons:
+                          apt:
+                                  packages:
+                                          - valgrind
+                                          - lcov
+                                          - libssl-dev
+                  script:
+                          - ./scripts/ci/build.sh
                 - os: linux
-                language: c
-                env:
-                        - WITH_CRYPTO=OPENSSL
-                          WITH_SYSTEM_DEPENDENCIES=ON
-                          ENABLE_TESTING=ON
+                  language: c
+                  env:
+                          - WITH_CRYPTO=OPENSSL
+                            WITH_SYSTEM_DEPENDENCIES=ON
+                            ENABLE_TESTING=ON
 
-                addons:
-                        apt:
-                                packages:
-                                        - valgrind
-                                        - lcov
-                                        - libssl-dev
-                script:
-                        - ./scripts/ci/build.sh
+                  addons:
+                          apt:
+                                  packages:
+                                          - valgrind
+                                          - lcov
+                                          - libssl-dev
+                  script:
+                                - ./scripts/ci/build.sh

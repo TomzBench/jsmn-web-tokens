@@ -30,8 +30,7 @@ if(ENABLE_TESTING)
   include(CTest)
   include(cmake/cmocka.cmake)
   include(cmake/CodeCoverage.cmake)
-  add_subdirectory(test/jsmn)
-  add_subdirectory(test/tokens)
+  add_subdirectory(test)
 
   APPEND_COVERAGE_COMPILER_FLAGS()
   set(COVERAGE_LCOV_EXCLUDES
@@ -41,7 +40,7 @@ if(ENABLE_TESTING)
     "${PROJECT_SOURCE_DIR}/test")
 
   setup_target_for_coverage_lcov(NAME test-coverage
-    EXECUTABLE test-jsmn
+    EXECUTABLE test-tokens
     COMMAND test-tokens)
 
 endif()

@@ -4,15 +4,43 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// clang-format off
 #ifdef _WIN32
-#ifdef JSMN_TOKENS_EXPORT
-#define JSMN_TOKENS_API __declspec(dllexport)
+#  include <assert.h>
+#  include <stdarg.h>
+#  include <stdbool.h>
+#  include <stdint.h>
+#  include <stdio.h>
+#  include <string.h>
+#  define __jsmn_malloc_fn malloc
+#  define __jsmn_free_fn free
+#  define __jsmn_assert_fn assert
+#  define __jsmn_malloc(x) __jsmn_malloc_fn(x)
+#  define __jsmn_free(x) __jsmn_free_fn(x)
+#  define __jsmn_assert(x) __jsmn_assert_fn(x)
+#  ifdef JSMN_TOKENS_EXPORT
+#    define JSMN_TOKENS_API __declspec(dllexport)
+#  else
+#    define JSMN_TOKENS_API __declspec(dllimport)
+#  endif
 #else
-#define JSMN_TOKENS_API __declspec(dllimport)
+#  include <assert.h>
+#  include <stdarg.h>
+#  include <stdbool.h>
+#  include <stddef.h>
+#  include <stdint.h>
+#  include <stdio.h>
+#  include <stdlib.h>
+#  include <string.h>
+#  define __jsmn_malloc_fn malloc
+#  define __jsmn_free_fn free
+#  define __jsmn_assert_fn assert
+#  define __jsmn_malloc(x) __jsmn_malloc_fn(x)
+#  define __jsmn_free(x) __jsmn_free_fn(x)
+#  define __jsmn_assert(x) __jsmn_assert_fn(x)
+#  define JSMN_TOKENS_API
 #endif
-#else
-#define JSMN_TOKENS_API
-#endif
+// clang-format on
 
 #ifndef JSMN_MAX_TOKEN_LEN
 #define JSMN_MAX_TOKEN_LEN 256
@@ -37,6 +65,8 @@
 extern "C"
 {
 #endif
+
+    typedef unsigned char byte;
 
     typedef struct jsmn_value
     {

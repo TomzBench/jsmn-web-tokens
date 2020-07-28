@@ -2,17 +2,12 @@
 
 # install headers
 set(INCLUDE_DIRECTORY ../include)
-list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_tokens.h)
-list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn_helpers.h)
-if(WITH_JSMN_HEADER_INSTALL)
-  list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn/jsmn.h)
-endif()
+list(APPEND INSTALL_HEADERS ${INCLUDE_DIRECTORY}/jsmn_tokens.h)
 
 # source files
 set(SOURCES
         crypto/base64.c
         crypto/base64uri.c
-	jsmn_helpers.c
 	jsmn_tokens.c)
 
 # header files

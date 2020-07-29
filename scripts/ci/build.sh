@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $GENERATOR = "Visual Studio 15 2017 Win64" ]; then
+if [ $GENERATOR == "Visual Studio 15 2017 Win64" ]; then
 	(
 		cmake \
 			-G "$GENERATOR" \

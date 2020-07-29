@@ -12,13 +12,6 @@
 #define json_for_each_arr(i, t, arr)                                           \
     for (i = 0, t = (arr) + 1; i < (arr)->size; t = json_next(t), i++)
 
-static bool
-json_tok_is_null(const char* buffer, const jsmntok_t* tok)
-{
-    if (tok->type != JSMN_PRIMITIVE) return false;
-    return buffer[tok->start] == 'n';
-}
-
 static const jsmntok_t*
 json_next(const jsmntok_t* tok)
 {
@@ -52,96 +45,6 @@ json_get_member(const char* buffer, const jsmntok_t tok[], const char* label)
 
     return NULL;
 }
-
-static const jsmntok_t*
-json_get_arr(const jsmntok_t tok[], size_t index)
-{
-    const jsmntok_t* t;
-    size_t i;
-
-    if (tok->type != JSMN_ARRAY) return NULL;
-
-    json_for_each_arr(i, t, tok)
-    {
-        if (index == 0) return t;
-        index--;
-    }
-
-    return NULL;
-}
-
-static const jsmntok_t*
-json_delve(const char* buf, const jsmntok_t* tok, const char* guide)
-{
-    char key[128];
-    while (*guide) {
-        int len, sz = strcspn(guide + 1, ".");
-        len = snprintf(key, sizeof(key), "%.*s", sz, guide + 1);
-        assert(len < sizeof(key));
-        switch (guide[0]) {
-            case '.':
-                if (!(tok->type == JSMN_OBJECT)) return NULL;
-                tok = json_get_member(buf, tok, key);
-                if (!tok) return NULL;
-                break;
-            default: abort();
-        }
-        guide += sz + 1;
-    }
-    return tok;
-}
-
-static int
-json_to_u64(const char* buf, const jsmntok_t* tok, uint64_t* n)
-{
-    char* end;
-    unsigned long long l;
-    l = strtoull(buf + tok->start, &end, 0);
-    if (end != buf + tok->end) return false;
-    assert(sizeof(l) >= sizeof(*n));
-    *n = l;
-    if ((l == ULLONG_MAX) && errno == ERANGE) return -1;
-    return *n == l ? 0 : -1;
-}
-
-static int
-json_to_s64(const char* buf, const jsmntok_t* tok, int64_t* n)
-{
-    char* end;
-    unsigned long long l;
-    l = strtoull(buf + tok->start, &end, 0);
-    if (end != buf + tok->end) return false;
-    assert(sizeof(l) >= sizeof(*n));
-    *n = l;
-    if ((l == LONG_MAX || l == LONG_MIN) && errno == ERANGE) return -1;
-    return *n == l ? 0 : -1;
-}
-
-#define make_json_to_u(id, type)                                               \
-    static int json_to_##id(                                                   \
-        const char* buffer, const jsmntok_t* tok, type* ret)                   \
-    {                                                                          \
-        uint64_t x;                                                            \
-        if (json_to_u64(buffer, tok, &x)) return -1;                           \
-        *ret = x;                                                              \
-        return *ret == x ? 0 : -1;                                             \
-    }
-
-#define make_json_to_s(id, type)                                               \
-    static int json_to_##id(                                                   \
-        const char* buffer, const jsmntok_t* tok, type* ret)                   \
-    {                                                                          \
-        int64_t x;                                                             \
-        if (json_to_s64(buffer, tok, &x)) return -1;                           \
-        *ret = x;                                                              \
-        return *ret == x ? 0 : -1;                                             \
-    }
-make_json_to_u(u32, uint32_t);
-make_json_to_s(s32, int32_t);
-make_json_to_u(u16, uint16_t);
-make_json_to_s(s16, int16_t);
-make_json_to_u(u8, uint8_t);
-make_json_to_s(s8, int8_t);
 
 static const char* alg_strings[JSMN_ALG_COUNT] = { "HS256", "HS384", "HS512" };
 

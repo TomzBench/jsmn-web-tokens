@@ -6,6 +6,7 @@ matrix:
                           - WITH_CRYPTO=MBEDTLS
                             WITH_SYSTEM_DEPENDENCIES=OFF
                             ENABLE_TESTING=ON
+                            GENERATOR="Unix Makefiles"
                   addons:
                           apt:
                                   packages:
@@ -20,6 +21,7 @@ matrix:
                           - WITH_CRYPTO=OPENSSL
                             WITH_SYSTEM_DEPENDENCIES=ON
                             ENABLE_TESTING=ON
+                            GENERATOR="Unix Makefiles"
 
                   addons:
                           apt:
@@ -34,6 +36,7 @@ matrix:
                   env:
                           - WITH_CRYPTO=OPENSSL
                             WITH_SYSTEM_DEPENDENCIES=ON
+                            GENERATOR="Visual Studio 15 2017 Win64"
                   script:
                           - choco install openssl
                           - ./scripts/ci/build.sh

@@ -104,7 +104,7 @@ append_dot(jsmn_token_encode_s* token)
     token->b[token->len++] = '.';
 }
 
-int
+JSMN_TOKENS_API int
 jsmn_token_init(
     jsmn_token_encode_s* token,
     JSMN_ALG alg,
@@ -142,7 +142,7 @@ ERROR:
     return err;
 }
 
-int
+JSMN_TOKENS_API int
 jsmn_token_sign(jsmn_token_encode_s* t, const char* key, uint32_t keylen)
 {
     char hash[512] = { 0 };
@@ -161,19 +161,19 @@ ERROR:
     return err;
 }
 
-uint32_t
+JSMN_TOKENS_API uint32_t
 jsmn_token_len(jsmn_token_encode_s* t)
 {
     return t->len;
 }
 
-const char*
+JSMN_TOKENS_API const char*
 jsmn_token_data(jsmn_token_encode_s* t)
 {
     return t->b;
 }
 
-int
+JSMN_TOKENS_API int
 jsmn_token_decode(
     jsmn_token_decode_s* t,
     const char* secret,
@@ -252,7 +252,7 @@ ERROR:
     return err;
 }
 
-int
+JSMN_TOKENS_API int
 jsmn_token_get_claim_str(
     jsmn_token_decode_s* token,
     const char* claim,
@@ -268,7 +268,7 @@ jsmn_token_get_claim_str(
     }
 }
 
-int
+JSMN_TOKENS_API int
 jsmn_token_get_claim_int(
     jsmn_token_decode_s* token,
     const char* claim,

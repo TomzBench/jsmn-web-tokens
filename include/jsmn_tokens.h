@@ -123,7 +123,7 @@ extern "C"
     JSMN_TOKENS_API int
     jsmn_token_sign(jsmn_token_encode_s* t, const char* secret, uint32_t slen);
     JSMN_TOKENS_API uint32_t jsmn_token_len(jsmn_token_encode_s* t);
-    JSMN_TOKENS_API const char* jsmn_token_data(jsmn_token_encode_s* t);
+    JSMN_TOKENS_API const char* jsmn_token_str(jsmn_token_encode_s* t);
     JSMN_TOKENS_API int jsmn_token_decode(
         jsmn_token_decode_s*,
         const char* secret,
@@ -138,6 +138,9 @@ extern "C"
         jsmn_token_decode_s* token,
         const char* claim,
         int* result);
+
+    // TODO deprecate jsmn_token_data
+#define jsmn_token_data(x) jsmn_token_str(x)
 
 #ifdef __cplusplus
 }

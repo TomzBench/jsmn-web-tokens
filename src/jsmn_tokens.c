@@ -168,7 +168,7 @@ jsmn_token_len(jsmn_token_encode_s* t)
 }
 
 JSMN_TOKENS_API const char*
-jsmn_token_data(jsmn_token_encode_s* t)
+jsmn_token_str(jsmn_token_encode_s* t)
 {
     return t->b;
 }

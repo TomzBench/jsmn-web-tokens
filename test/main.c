@@ -186,7 +186,7 @@ test_jsmn_token_init_ok(void** context_p)
         err = jsmn_token_sign(&t, UNSAFE_SECRET, strlen(UNSAFE_SECRET));
         assert_int_equal(err, 0);
         assert_int_equal(strlen(tokens[i]), t.len);
-        assert_memory_equal(tokens[i], jsmn_token_data(&t), jsmn_token_len(&t));
+        assert_memory_equal(tokens[i], jsmn_token_str(&t), jsmn_token_len(&t));
     }
 }
 

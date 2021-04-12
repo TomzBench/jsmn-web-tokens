@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.9.3...3.16)
 project(jsmn_tokens)
 
-find_package(Git)
-if(NOT Git_FOUND)
-  message(FATAL_ERROR "Git not found! Git is required to install submodules")
-endif()
+get_filename_component(WORKSPACE_ROOT "./" ABSOLUTE)
+set(ROOT_DIR "${WORKSPACE_ROOT}")
+set(DOWNLOAD_DIR "${WORKSPACE_ROOT}/dl")
+set(EXTERNAL_DIR "${WORKSPACE_ROOT}/external")
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-
-set(CMAKE_POSITION_INDEPENDENT_CODE on)
+include("${WORKSPACE_ROOT}/cmake/Modules/modules.cmake")
 
 # BOOL OPTIONS
 option(BUILD_SHARED "Whether or not to build the shared object"  ON)
@@ -17,6 +16,7 @@ option(WITH_SYSTEM_DEPENDENCIES "Do not build dependencies" OFF)
 option(WITH_JSMN_HEADER_INSTALL "Install the jasmine header" ON)
 
 # OPTIONS
+set(CMAKE_POSITION_INDEPENDENT_CODE on)
 set(JSMN_MAX_TOKEN_LEN 256 CACHE STRING "Largest token supported")
 set(JSMN_MAX_TOKEN_HEADER_LEN 64 CACHE STRING "Largest token header supported")
 set(JSMN_MAX_TOKENS 64 CACHE STRING "Largest decoded token supported")

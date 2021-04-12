@@ -47,3 +47,5 @@ test.db
 
 compile_commands.json
 .clangd
+
+external
